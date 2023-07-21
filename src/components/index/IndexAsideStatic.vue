@@ -6,13 +6,13 @@
         <el-menu :mode="2 == 1? 'horizontal':'vertical'" :unique-opened="true" class="el-menu-demo" default-active="">
           <el-menu-item index="0" @click="menuHandler('')"><i v-if="true" class="el-icon-menu el-icon-s-home"/>首页
           </el-menu-item>
-          <el-submenu :index="1">
+          <el-submenu :index="'1'">
             <template slot="title">
               <i v-if="true" class="el-icon-menu el-icon-user-solid"/>
               <span>个人中心</span>
             </template>
-            <el-menu-item :index="1-1" @click="menuHandler('updatePassword')">修改密码</el-menu-item>
-            <el-menu-item :index="1-2" @click="menuHandler('center')">个人信息</el-menu-item>
+            <el-menu-item :index="'1-1'" @click="menuHandler('updatePassword')">修改密码</el-menu-item>
+            <el-menu-item :index="'1-2'" @click="menuHandler('center')">个人信息</el-menu-item>
           </el-submenu>
           <el-submenu v-for=" (menu,index) in menuList" :key="menu.id" :index="index+2+''"
                       style="border-color: rgb(50, 65, 87) !important">
@@ -94,7 +94,6 @@ export default {
         params: params
       }).then(({data}) => {
         this.menuList = data.data;
-        console.log(this.menuList)
           this.$storage.set("menus", this.menuList);
       })
     this.role = this.$storage.get('role')

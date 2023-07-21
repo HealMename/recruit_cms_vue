@@ -151,10 +151,6 @@ export default {
       }
       this.isShow = true;
     },
-    register(tableName) {
-      this.$storage.set("loginTable", tableName);
-      this.$router.push({path: '/register'})
-    },
     // 登陆
     login() {
       // 用户点击遮罩层，应该关闭模态框
@@ -168,45 +164,19 @@ export default {
         return;
       }
       this.rulesForm.role = '用户'
-      let url = `${DOMAIN_API_SYS}/django7681v/${this.tableName}/login?username=${this.rulesForm.username}&password=${this.rulesForm.password}&role=${this.rulesForm.role}`
-      // if (this.rulesForm.role === '出题专家' || this.rulesForm.role === '面试官') {
-      if (url) {
-        url = `${DOMAIN_API_SYS}/tea/login/?username=${this.rulesForm.username}&password=${this.rulesForm.password}&role=${this.rulesForm.role}`
+      let url = `${DOMAIN_API_SYS}/tea/login/?username=${this.rulesForm.username}&password=${this.rulesForm.password}&role=用户`
         this.$http.post(url, {}).then(res => {
           console.log(res)
           this.$storage.set("Token", res.data.token);
           this.$storage.set("userId", res.data.id);
-          this.$storage.set("role", this.rulesForm.role);
-          this.$storage.set("sessionTable", this.tableName);
+          this.$storage.set("role", '用户');
+          this.$storage.set("sessionTable", 'users');
           this.$storage.set("adminName", this.rulesForm.username);
-          if (this.rulesForm.role === '管理员') {
-              this.$router.replace({path: "/index/"});
-            } else {
-              window.location.href = `${this.$base.indexUrl}`
-            }
+          this.$router.replace({path: "/index/"});
         }).catch((res) => {
           this.$layer_message(res.result)
         }).finally(() => this.loading = false)
 
-      } else {
-        // this.$http.post(url, {"role": this.rulesForm.role}).then(({data}) => {
-        //   if (data && data.code === 0) {
-        //     this.$storage.set("userId", data.id);
-        //     this.$storage.set("Token", data.token);
-        //     this.$storage.set("role", this.rulesForm.role);
-        //     this.$storage.set("sessionTable", this.tableName);
-        //     this.$storage.set("adminName", this.rulesForm.username);
-        //     if (this.rulesForm.role === '管理员') {
-        //       this.$router.replace({path: "/index/"});
-        //     } else {
-        //       window.location.href = `${this.$base.indexUrl}`
-        //     }
-        //
-        //   } else {
-        //     this.$message.error(data.msg);
-        //   }
-        // });
-      }
     },
   }
 };
@@ -245,22 +215,6 @@ export default {
     transition: all 0.3s;
   }
 
-  .register {
-    width: auto;
-    height: 24px;
-    line-height: 24px;
-    margin: 10px 0 0 15%;
-    padding: 0;
-    color: rgba(242, 248, 184, 1);
-    font-size: 12px;
-    border-radius: 0;
-    border-width: 0;
-    border-style: solid;
-    border-color: rgba(64, 158, 255, 1);
-    background-color: rgba(255, 255, 255, 0);
-    box-shadow: 0 0 6px rgba(255, 0, 0, 0);
-    cursor: pointer;
-  }
 
   .reset {
     width: auto;
@@ -519,12 +473,6 @@ export default {
       color: #999;
       margin: 0 !important;
       display: flex;
-
-      .register {
-        // float: left;
-        // width: 50%;
-        text-align: center;
-      }
 
       .reset {
         float: right;

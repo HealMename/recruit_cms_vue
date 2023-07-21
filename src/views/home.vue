@@ -19,14 +19,14 @@ export default {
   methods:{
     init(){
         if(this.$storage.get('Token')){
-        this.$http({
-            url: `${this.$storage.get('sessionTable')}/session?id=${this.$storage.get('userId')}`,
-            method: "get"
-        }).then(({ data }) => {
-            if (data && data.code != 0) {
-            router.push({ name: 'login' })
-            }
-        });
+            this.$http({
+                url: `${this.$storage.get('sessionTable')}/session?id=${this.$storage.get('userId')}`,
+                method: "get"
+            }).then(({ data }) => {
+                if (data && data.code != 0) {
+                router.push({ name: 'login' })
+                }
+            });
         }else{
             router.push({ name: 'login' })
         }
