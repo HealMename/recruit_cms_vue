@@ -1,7 +1,9 @@
 <template>
 <div class="content">
 			<div class="text main-text" :style='{"padding":"0","boxShadow":"0 0 6px rgba(0,0,0,.1)","margin":"0 auto","borderColor":"rgba(0,0,0,.3)","backgroundColor":"#f7f7f7","color":"#333","borderRadius":"6px","borderWidth":"0","width":"auto","lineHeight":"auto","fontSize":"24px","borderStyle":"solid"}'>欢迎使用 {{this.$project.projectName}}</div>
-	</div>
+
+
+</div>
 </template>
 <script>
 import router from '@/router/router-static'

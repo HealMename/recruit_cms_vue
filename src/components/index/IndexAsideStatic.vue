@@ -3,10 +3,10 @@
     <div class="index-aside-inner menulist">
       <div class="menulist-item">
 
-        <el-menu :mode="2 == 1? 'horizontal':'vertical'" :unique-opened="true" class="el-menu-demo" default-active="0">
+        <el-menu :mode="2 == 1? 'horizontal':'vertical'" :unique-opened="true" class="el-menu-demo" default-active="">
           <el-menu-item index="0" @click="menuHandler('')"><i v-if="true" class="el-icon-menu el-icon-s-home"/>首页
           </el-menu-item>
-          <el-submenu :index="1+''">
+          <el-submenu :index="1">
             <template slot="title">
               <i v-if="true" class="el-icon-menu el-icon-user-solid"/>
               <span>个人中心</span>

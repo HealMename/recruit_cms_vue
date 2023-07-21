@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="container loginIn">
-
       <div :class="2 == 1 ? 'left' : 2 == 2 ? 'left center' : 'left right'">
         <el-form class="login-form" label-position="left" :label-width="3 == 3 || 3 == 2 ? '60px': '0px'">
           <div class="title-container"><h3 class="title">
