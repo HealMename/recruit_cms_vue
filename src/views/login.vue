@@ -172,6 +172,7 @@ export default {
           this.$storage.set("role", '用户');
           this.$storage.set("sessionTable", 'users');
           this.$storage.set("adminName", this.rulesForm.username);
+          this.$storage.set("open_role", res.data.open_role);
           this.$router.replace({path: "/index/"});
         }).catch((res) => {
           this.$layer_message(res.result)

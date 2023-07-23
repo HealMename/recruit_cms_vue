@@ -15,6 +15,12 @@
             <el-radio label="1" value="1">已审核</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="是否体验：">
+          <el-radio-group v-model="form.is_free">
+            <el-radio label="0" value="0">否</el-radio>
+            <el-radio label="1" value="1">是</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="科目：">
           <el-radio-group v-model="form.sid">
             <el-radio :label="key.id" :value="key.id" v-for="(key, index) in subjects" v-bind:key="index">{{
@@ -184,6 +190,7 @@ export default {
       subjects: [],
       form: {
         id: this.$route.params.id,
+        is_free: "0",
         sid: 1,
         do_time: 0,
         do_points: '',
