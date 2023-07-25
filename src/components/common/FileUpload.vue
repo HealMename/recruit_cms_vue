@@ -15,8 +15,9 @@
         :on-success="handleUploadSuccess"
         :on-error="handleUploadErr"
         :before-upload="handleBeforeUpload"
+
     >
-      <i class="el-icon-plus"></i>
+      <i class="el-icon-plus" ></i>
       <div slot="tip" class="el-upload__tip" style="color:#838fa1;">{{ tip }}</div>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible" size="tiny" append-to-body>
@@ -57,9 +58,8 @@ export default {
   computed: {
     // 计算属性的 getter
     getActionUrl: function () {
-      // return base.url + this.action + "?token=" + storage.get("token");
-      console.log(111, `${this.$base.url}${this.$base.name}/` + this.action)
-      return `${this.$base.url}${this.$base.name}/` + this.action;
+      console.log(111, this.action)
+      return this.action;
     }
   },
   methods: {
@@ -74,7 +74,7 @@ export default {
           var name = index;
           var file = {
             name: name,
-            url: url
+            file_url: url
           };
           fileArray.push(file);
         });
@@ -86,13 +86,9 @@ export default {
     },
     // 上传文件成功后执行
     handleUploadSuccess(res, file, fileList) {
-      if (res && res.code === 0) {
-        fileList[fileList.length - 1]["url"] = "media/img/" + file.response.file;
-        this.setFileList(fileList);
-        this.$emit("change", this.fileUrlList.join(","));
-      } else {
-        this.$message.error(res.msg);
-      }
+      console.log(res)
+      this.setFileList(res.data);
+      this.$emit("change", this.fileUrlList.join(","));
     },
     // 图片上传失败
     handleUploadErr(err, file, fileList) {
@@ -120,14 +116,14 @@ export default {
       var token = storage.get("token");
       let _this = this;
       fileList.forEach(function (item, index) {
-        var url = item.url.split("?")[0];
+        var url = item.file_url.split("?")[0];
         if (!url.startsWith("http")) {
-          url = _this.$base.url + url
+          url = web_file_url + url
         }
         var name = item.name;
         var file = {
           name: name,
-          url: url + "?token=" + token
+          url: url
         };
         fileArray.push(file);
         fileUrlArray.push(url);

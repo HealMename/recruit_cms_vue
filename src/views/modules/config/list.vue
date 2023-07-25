@@ -17,32 +17,15 @@
                   :fit="contents.tableFit"
                   :stripe="contents.tableStripe"
                   :style="{width: '100%',fontSize:contents.tableContentFontSize,color:contents.tableContentFontColor}"
-                  v-if="isAuth('config','查看')"
                   :data="dataList"
-                  v-loading="dataListLoading"
-                  @selection-change="selectionChangeHandler">
-          <el-table-column v-if="contents.tableSelection"
-                           type="selection"
-                           :header-align="contents.tableAlign"
-                           align="center"
-                           width="50">
-          </el-table-column>
-          <el-table-column label="索引" :align="contents.tableAlign" v-if="contents.tableIndex" type="index" width="50"/>
-          <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign"
-                           prop="name"
-                           :header-align="contents.tableAlign"
-                           label="名称">
-            <template slot-scope="scope">
-              {{ scope.row.name }}
-            </template>
-          </el-table-column>
+                  v-loading="dataListLoading">
+          <el-table-column label="索引" :align="contents.tableAlign" type="id" width="50"/>
           <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" prop="value"
                            :header-align="contents.tableAlign"
-                           width="200"
                            label="值">
             <template slot-scope="scope">
               <div v-if="scope.row.value">
-                <img :src="$base.url+scope.row.value.split(',')[0]" width="100" height="100">
+                <img :src="scope.row.value" width="100" height="100">
               </div>
               <div v-else>无图片</div>
             </template>
@@ -51,31 +34,7 @@
                            :header-align="contents.tableAlign"
                            label="操作">
             <template slot-scope="scope">
-              <el-button
-                  v-if="isAuth('config','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1"
-                   icon="el-icon-tickets" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">
-                {{ contents.tableBtnFont == 1 ? '详情' : '' }}
-              </el-button>
-              <el-button
-                  v-if="isAuth('config','查看') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2"
-                   size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">
-                {{ contents.tableBtnFont == 1 ? '详情' : '' }}<i class="el-icon-tickets el-icon--right"/></el-button>
-              <el-button v-if="isAuth('config','查看') && contents.tableBtnIcon == 0"  size="mini"
-                         @click="addOrUpdateHandler(scope.row.id,'info')">{{ contents.tableBtnFont == 1 ? '详情' : '' }}
-              </el-button>
-              <el-button
-                  v-if=" isAuth('config','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1"
-                   icon="el-icon-edit" size="mini" @click="addOrUpdateHandler(scope.row.id)">
-                {{ contents.tableBtnFont == 1 ? '修改' : '' }}
-              </el-button>
-              <el-button
-                  v-if=" isAuth('config','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2"
-                   size="mini" @click="addOrUpdateHandler(scope.row.id)">
-                {{ contents.tableBtnFont == 1 ? '修改' : '' }}<i class="el-icon-edit el-icon--right"/></el-button>
-              <el-button v-if=" isAuth('config','修改') && contents.tableBtnIcon == 0"  size="mini"
-                         @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1 ? '修改' : '' }}
-              </el-button>
-
+              <el-button size="mini" @click="addOrUpdateHandler(scope.row.value)">修改<i class="el-icon-edit el-icon--right"/></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -231,6 +190,7 @@ export default {
         "tableAlign": "center"
       },
       layouts: '',
+      file_url: ''
 
 
     };
@@ -238,7 +198,7 @@ export default {
   created() {
     this.init();
     this.getDataList();
-    // this.contentStyleChange()
+    this.contentStyleChange()
   },
   mounted() {
 
@@ -350,69 +310,14 @@ export default {
         })
       })
     },
-    // 表格
-    // rowStyle({ row, rowIndex}) {
-    //   if (rowIndex % 2 == 1) {
-    //     if(this.contents.tableStripe) {
-    //       return {color:this.contents.tableStripeFontColor}
-    //     }
-    //   } else {
-    //     return ''
-    //   }
-    // },
-    // cellStyle({ row, rowIndex}){
-    //   if (rowIndex % 2 == 1) {
-    //     if(this.contents.tableStripe) {
-    //       return {backgroundColor:this.contents.tableStripeBgColor}
-    //     }
-    //   } else {
-    //     return ''
-    //   }
-    // },
+
     headerRowStyle({row, rowIndex}) {
       return {color: this.contents.tableHeaderFontColor}
     },
     headerCellStyle({row, rowIndex}) {
       return {backgroundColor: this.contents.tableHeaderBgColor}
     },
-    // 表格按钮
-    contentTableBtnStyleChange() {
-      // this.$nextTick(()=>{
-      //   setTimeout(()=>{
-      //     document.querySelectorAll('.table-content .tables .el-table__body .el-button--success').forEach(el=>{
-      //       el.style.height = this.contents.tableBtnHeight
-      //       el.style.color = this.contents.tableBtnDetailFontColor
-      //       el.style.fontSize = this.contents.tableBtnFontSize
-      //       el.style.borderWidth = this.contents.tableBtnBorderWidth
-      //       el.style.borderStyle = this.contents.tableBtnBorderStyle
-      //       el.style.borderColor = this.contents.tableBtnBorderColor
-      //       el.style.borderRadius = this.contents.tableBtnBorderRadius
-      //       el.style.backgroundColor = this.contents.tableBtnDetailBgColor
-      //     })
-      //     document.querySelectorAll('.table-content .tables .el-table__body .el-button--primary').forEach(el=>{
-      //       el.style.height = this.contents.tableBtnHeight
-      //       el.style.color = this.contents.tableBtnEditFontColor
-      //       el.style.fontSize = this.contents.tableBtnFontSize
-      //       el.style.borderWidth = this.contents.tableBtnBorderWidth
-      //       el.style.borderStyle = this.contents.tableBtnBorderStyle
-      //       el.style.borderColor = this.contents.tableBtnBorderColor
-      //       el.style.borderRadius = this.contents.tableBtnBorderRadius
-      //       el.style.backgroundColor = this.contents.tableBtnEditBgColor
-      //     })
-      //     document.querySelectorAll('.table-content .tables .el-table__body .el-button--danger').forEach(el=>{
-      //       el.style.height = this.contents.tableBtnHeight
-      //       el.style.color = this.contents.tableBtnDelFontColor
-      //       el.style.fontSize = this.contents.tableBtnFontSize
-      //       el.style.borderWidth = this.contents.tableBtnBorderWidth
-      //       el.style.borderStyle = this.contents.tableBtnBorderStyle
-      //       el.style.borderColor = this.contents.tableBtnBorderColor
-      //       el.style.borderRadius = this.contents.tableBtnBorderRadius
-      //       el.style.backgroundColor = this.contents.tableBtnDelBgColor
-      //     })
 
-      //   }, 50)
-      // })
-    },
     // 分页
     contentPageStyleChange() {
       let arr = []
@@ -444,7 +349,6 @@ export default {
         limit: this.pageSize,
         sort: 'id',
       }
-      params['name'] = '%picture%'
       this.$http({
         url: "config/page",
         method: "get",
@@ -452,6 +356,7 @@ export default {
       }).then(({data}) => {
         if (data && data.code === 0) {
           this.dataList = data.data.list;
+          console.log(this.dataList)
           this.totalPage = data.data.total;
         } else {
           this.dataList = [];
@@ -476,16 +381,11 @@ export default {
       this.dataListSelections = val;
     },
     // 添加/修改
-    addOrUpdateHandler(id, type) {
+    addOrUpdateHandler(value) {
       this.showFlag = false;
       this.addOrUpdateFlag = true;
       this.crossAddOrUpdateFlag = false;
-      if (type != 'info') {
-        type = 'else';
-      }
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type);
-      });
+      this.file_url = value;
     },
     // 查看评论
     // 下载

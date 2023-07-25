@@ -9,24 +9,13 @@
         :style="{backgroundColor:addEditForm.addEditBoxColor}"
     >
       <el-row>
-        <el-col :span="12">
-          <el-form-item class="input" v-if="type!='info'" label="名称" prop="name">
-            <el-input v-model="ruleForm.name"
-                      placeholder="名称" clearable readonly></el-input>
-          </el-form-item>
-          <div v-else>
-            <el-form-item class="input" label="名称" prop="name">
-              <el-input v-model="ruleForm.name"
-                        placeholder="名称" readonly></el-input>
-            </el-form-item>
-          </div>
-        </el-col>
+
         <el-col :span="24">
           <el-form-item class="upload" v-if="type!='info' && !ro.value" label="值" prop="value">
             <file-upload
                 tip="点击上传值"
-                action="file/upload"
-                :limit="3"
+                :action="upload_url"
+                :limit="1"
                 :multiple="true"
                 :fileUrls="ruleForm.value?ruleForm.value:''"
                 @change="valueUploadChange"
@@ -35,7 +24,7 @@
           <div v-else>
             <el-form-item v-if="ruleForm.value" label="值" prop="value">
               <img style="margin-right:20px;" v-bind:key="index" v-for="(item,index) in ruleForm.value.split(',')"
-                   :src="$base.url+item" width="100" height="100">
+                   :src="item.file_url" width="100" height="100">
             </el-form-item>
           </div>
         </el-col>
@@ -207,67 +196,35 @@ export default {
         value: '',
       },
       rules: {
-        name: [
-          {required: true, message: '名称不能为空', trigger: 'blur'},
-        ],
-        value: [],
-      }
+        name: [],
+        value: [{required: true, message: '请上传图片', trigger: 'blur'}],
+      },
+      upload_url: ''
     };
   },
   props: ["parent"],
   computed: {},
   created() {
-    this.addEditStyleChange()
+    this.addEditStyleChange();
+    this.get_upload_key();
     this.addEditUploadStyleChange()
+    console.log(this.parent.file_url)
+    this.ruleForm.value = this.parent.file_url;
   },
   methods: {
+    // 获取上传密钥
+    get_upload_key(){
+
+        this.$http.post(DOMAIN_API_SYS + "/uploads/upload_key/", {}).then(res => {
+        let upload_key = res.data.data.key;
+        this.upload_url = UPLOAD_URL + '?upcheck=' + upload_key + '&up_type=carousel'
+        this.loading = false
+      })
+    },
     // 下载
     download(file) {
       window.open(`${file}`)
     },
-    // 初始化
-    init(id, type) {
-      if (id) {
-        this.id = id;
-        this.type = type;
-      }
-      if (this.type == 'info' || this.type == 'else') {
-        this.info(id);
-      } else if (this.type == 'logistics') {
-        this.logistics = false;
-        this.info(id);
-      } else if (this.type == 'cross') {
-        var obj = this.$storage.getObj('crossObj');
-        for (var o in obj) {
-          if (o == 'name') {
-            this.ruleForm.name = obj[o];
-            this.ro.name = true;
-            continue;
-          }
-          if (o == 'value') {
-            this.ruleForm.value = obj[o];
-            this.ro.value = true;
-            continue;
-          }
-        }
-      }
-    },
-    // 多级联动参数
-    info(id) {
-      this.$http({
-        url: `config/info/${id}`,
-        method: "get"
-      }).then(({data}) => {
-        if (data && data.code === 0) {
-          this.ruleForm = data.data;
-          //解决前台上传图片后台不显示的问题
-          let reg = new RegExp('../../../upload', 'g')//g代表全部
-        } else {
-          this.$message.error(data.msg);
-        }
-      });
-    },
-
 
     // 提交
     onSubmit() {
@@ -527,8 +484,8 @@ export default {
     addEditUploadStyleChange() {
       this.$nextTick(() => {
         document.querySelectorAll('.addEdit-block .upload .el-upload-list--picture-card .el-upload-list__item').forEach(el => {
-          el.style.width = this.addEditForm.uploadHeight
-          el.style.height = this.addEditForm.uploadHeight
+          el.style.width = '1070px'
+          el.style.height = '343px'
           el.style.borderWidth = this.addEditForm.uploadBorderWidth
           el.style.borderStyle = this.addEditForm.uploadBorderStyle
           el.style.borderColor = this.addEditForm.uploadBorderColor
