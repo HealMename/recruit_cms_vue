@@ -7,7 +7,7 @@
       </el-form>
       <div class="table-content">
         <el-table class="tables" :size="contents.tableSize" :show-header="contents.tableShowHeader"
-                  :header-row-style="headerRowStyle" :header-cell-style="headerCellStyle"
+
                   :border="contents.tableBorder"
                   :fit="contents.tableFit"
                   :stripe="contents.tableStripe"
@@ -194,7 +194,6 @@ export default {
   },
   created() {
     this.getDataList();
-    // this.contentStyleChange()
   },
   mounted() {
 
@@ -209,110 +208,6 @@ export default {
   },
   methods: {
 
-    contentStyleChange() {
-      this.contentSearchStyleChange()
-      this.contentBtnAdAllStyleChange()
-      this.contentSearchBtnStyleChange()
-      this.contentTableBtnStyleChange()
-      this.contentPageStyleChange()
-    },
-    contentSearchStyleChange() {
-      this.$nextTick(() => {
-        document.querySelectorAll('.form-content .slt .el-input__inner').forEach(el => {
-          let textAlign = 'left'
-          if (this.contents.inputFontPosition == 2) textAlign = 'center'
-          if (this.contents.inputFontPosition == 3) textAlign = 'right'
-          el.style.textAlign = textAlign
-          el.style.height = this.contents.inputHeight
-          el.style.lineHeight = this.contents.inputHeight
-          el.style.color = this.contents.inputFontColor
-          el.style.fontSize = this.contents.inputFontSize
-          el.style.borderWidth = this.contents.inputBorderWidth
-          el.style.borderStyle = this.contents.inputBorderStyle
-          el.style.borderColor = this.contents.inputBorderColor
-          el.style.borderRadius = this.contents.inputBorderRadius
-          el.style.backgroundColor = this.contents.inputBgColor
-        })
-        if (this.contents.inputTitle) {
-          document.querySelectorAll('.form-content .slt .el-form-item__label').forEach(el => {
-            el.style.color = this.contents.inputTitleColor
-            el.style.fontSize = this.contents.inputTitleSize
-            el.style.lineHeight = this.contents.inputHeight
-          })
-        }
-        setTimeout(() => {
-          document.querySelectorAll('.form-content .slt .el-input__prefix').forEach(el => {
-            el.style.color = this.contents.inputIconColor
-            el.style.lineHeight = this.contents.inputHeight
-          })
-          document.querySelectorAll('.form-content .slt .el-input__suffix').forEach(el => {
-            el.style.color = this.contents.inputIconColor
-            el.style.lineHeight = this.contents.inputHeight
-          })
-          document.querySelectorAll('.form-content .slt .el-input__icon').forEach(el => {
-            el.style.lineHeight = this.contents.inputHeight
-          })
-        }, 10)
-
-      })
-    },
-    // 搜索按钮
-    contentSearchBtnStyleChange() {
-      this.$nextTick(() => {
-        document.querySelectorAll('.form-content .slt .el-button--success').forEach(el => {
-          el.style.height = this.contents.searchBtnHeight
-          el.style.color = this.contents.searchBtnFontColor
-          el.style.fontSize = this.contents.searchBtnFontSize
-          el.style.borderWidth = this.contents.searchBtnBorderWidth
-          el.style.borderStyle = this.contents.searchBtnBorderStyle
-          el.style.borderColor = this.contents.searchBtnBorderColor
-          el.style.borderRadius = this.contents.searchBtnBorderRadius
-          el.style.backgroundColor = this.contents.searchBtnBgColor
-        })
-      })
-    },
-    // 新增、批量删除
-    contentBtnAdAllStyleChange() {
-      this.$nextTick(() => {
-        document.querySelectorAll('.form-content .ad .el-button--success').forEach(el => {
-          el.style.height = this.contents.btnAdAllHeight
-          el.style.color = this.contents.btnAdAllAddFontColor
-          el.style.fontSize = this.contents.btnAdAllFontSize
-          el.style.borderWidth = this.contents.btnAdAllBorderWidth
-          el.style.borderStyle = this.contents.btnAdAllBorderStyle
-          el.style.borderColor = this.contents.btnAdAllBorderColor
-          el.style.borderRadius = this.contents.btnAdAllBorderRadius
-          el.style.backgroundColor = this.contents.btnAdAllAddBgColor
-        })
-        document.querySelectorAll('.form-content .ad .el-button--danger').forEach(el => {
-          el.style.height = this.contents.btnAdAllHeight
-          el.style.color = this.contents.btnAdAllDelFontColor
-          el.style.fontSize = this.contents.btnAdAllFontSize
-          el.style.borderWidth = this.contents.btnAdAllBorderWidth
-          el.style.borderStyle = this.contents.btnAdAllBorderStyle
-          el.style.borderColor = this.contents.btnAdAllBorderColor
-          el.style.borderRadius = this.contents.btnAdAllBorderRadius
-          el.style.backgroundColor = this.contents.btnAdAllDelBgColor
-        })
-        document.querySelectorAll('.form-content .ad .el-button--warning').forEach(el => {
-          el.style.height = this.contents.btnAdAllHeight
-          el.style.color = this.contents.btnAdAllWarnFontColor
-          el.style.fontSize = this.contents.btnAdAllFontSize
-          el.style.borderWidth = this.contents.btnAdAllBorderWidth
-          el.style.borderStyle = this.contents.btnAdAllBorderStyle
-          el.style.borderColor = this.contents.btnAdAllBorderColor
-          el.style.borderRadius = this.contents.btnAdAllBorderRadius
-          el.style.backgroundColor = this.contents.btnAdAllWarnBgColor
-        })
-      })
-    },
-
-    headerRowStyle({row, rowIndex}) {
-      return {color: this.contents.tableHeaderFontColor}
-    },
-    headerCellStyle({row, rowIndex}) {
-      return {backgroundColor: this.contents.tableHeaderBgColor}
-    },
 
     // 分页
     contentPageStyleChange() {
@@ -451,38 +346,6 @@ export default {
 }
 
 .tables {
-  & /deep/ .el-button--success {
-    height: 40px;
-    color: rgba(101, 126, 253, 1);
-    font-size: 14px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(101, 126, 253, 1);
-    border-radius: 4px;
-    background-color: #fff;
-  }
-
-  & /deep/ .el-button--primary {
-    height: 40px;
-    color: rgba(101, 126, 253, 1);
-    font-size: 14px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(101, 126, 253, 1);
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-  & /deep/ .el-button--danger {
-    height: 40px;
-    color: rgba(101, 126, 253, 1);
-    font-size: 14px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(101, 126, 253, 1);
-    border-radius: 4px;
-    background-color: #fff;
-  }
 
   & /deep/ .el-button {
     margin: 4px;
