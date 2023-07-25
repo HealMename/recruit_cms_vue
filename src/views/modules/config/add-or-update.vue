@@ -192,7 +192,7 @@ export default {
         value: false,
       },
       ruleForm: {
-        name: '',
+        id: '',
         value: '',
       },
       rules: {
@@ -209,7 +209,9 @@ export default {
     this.get_upload_key();
     this.addEditUploadStyleChange()
     console.log(this.parent.file_url)
+    console.log(this.parent.file_id)
     this.ruleForm.value = this.parent.file_url;
+    this.ruleForm.id = this.parent.file_id;
   },
   methods: {
     // 获取上传密钥
@@ -229,95 +231,9 @@ export default {
     // 提交
     onSubmit() {
 
-
-      if (this.ruleForm.value != null) {
-        this.ruleForm.value = this.ruleForm.value.replace(new RegExp(this.$base.url, "g"), "");
-      }
-
-      var objcross = this.$storage.getObj('crossObj');
-
-      //更新跨表属性
-      var crossuserid;
-      var crossrefid;
-      var crossoptnum;
-      if (this.type == 'cross') {
-        var statusColumnName = this.$storage.get('statusColumnName');
-        var statusColumnValue = this.$storage.get('statusColumnValue');
-        if (statusColumnName != '') {
-          var obj = this.$storage.getObj('crossObj');
-          if (!statusColumnName.startsWith("[")) {
-            for (var o in obj) {
-              if (o == statusColumnName) {
-                obj[o] = statusColumnValue;
-              }
-            }
-            var table = this.$storage.get('crossTable');
-            this.$http({
-              url: `${table}/update`,
-              method: "post",
-              data: obj
-            }).then(({data}) => {
-            });
-          } else {
-            crossuserid = this.$storage.get('userid');
-            crossrefid = obj['id'];
-            crossoptnum = this.$storage.get('statusColumnName');
-            crossoptnum = crossoptnum.replace(/\[/, "").replace(/\]/, "");
-          }
-        }
-      }
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
-          if (crossrefid && crossuserid) {
-            this.ruleForm.crossuserid = crossuserid;
-            this.ruleForm.crossrefid = crossrefid;
-            let params = {
-              page: 1,
-              limit: 10,
-              crossuserid: this.ruleForm.crossuserid,
-              crossrefid: this.ruleForm.crossrefid,
-            }
-            this.$http({
-              url: "config/page",
-              method: "get",
-              params: params
-            }).then(({
-                       data
-                     }) => {
-              if (data && data.code === 0) {
-                if (data.data.total >= crossoptnum) {
-                  this.$message.error(this.$storage.get('tips'));
-                  return false;
-                } else {
-                  this.$http({
-                    url: `config/${!this.ruleForm.id ? "save" : "update"}`,
-                    method: "post",
-                    data: this.ruleForm
-                  }).then(({data}) => {
-                    if (data && data.code === 0) {
-                      this.$message({
-                        message: "操作成功",
-                        type: "success",
-                        duration: 1500,
-                        onClose: () => {
-                          this.parent.showFlag = true;
-                          this.parent.addOrUpdateFlag = false;
-                          this.parent.configCrossAddOrUpdateFlag = false;
-                          this.parent.search();
-                          this.parent.contentStyleChange();
-                        }
-                      });
-                    } else {
-                      this.$message.error(data.msg);
-                    }
-                  });
-
-                }
-              } else {
-              }
-            });
-          } else {
-            this.$http({
+          this.$http({
               url: `config/${!this.ruleForm.id ? "save" : "update"}`,
               method: "post",
               data: this.ruleForm
@@ -339,14 +255,10 @@ export default {
                 this.$message.error(data.msg);
               }
             });
-          }
         }
       });
     },
-    // 获取uuid
-    getUUID() {
-      return new Date().getTime();
-    },
+
     // 返回
     back() {
       this.parent.showFlag = true;

@@ -3,12 +3,7 @@
     <!-- 列表页 -->
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
-
-        <el-row class="ad"
-                :style="{justifyContent:contents.btnAdAllBoxPosition=='1'?'flex-start':contents.btnAdAllBoxPosition=='2'?'center':'flex-end'}">
-          <el-form-item>
-          </el-form-item>
-        </el-row>
+         <el-button size="mini" @click="addOrUpdateHandler({value: ''})">新增<i class="el-icon-plus el-icon--right"/></el-button>
       </el-form>
       <div class="table-content">
         <el-table class="tables" :size="contents.tableSize" :show-header="contents.tableShowHeader"
@@ -19,7 +14,7 @@
                   :style="{width: '100%',fontSize:contents.tableContentFontSize,color:contents.tableContentFontColor}"
                   :data="dataList"
                   v-loading="dataListLoading">
-          <el-table-column label="索引" :align="contents.tableAlign" type="id" width="50"/>
+          <el-table-column label="索引" :align="contents.tableAlign" type="id" width="50" prop="id"/>
           <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" prop="value"
                            :header-align="contents.tableAlign"
                            label="值">
@@ -34,7 +29,9 @@
                            :header-align="contents.tableAlign"
                            label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="addOrUpdateHandler(scope.row.value)">修改<i class="el-icon-edit el-icon--right"/></el-button>
+              <el-button size="mini" @click="addOrUpdateHandler(scope.row)">修改<i class="el-icon-edit el-icon--right"/></el-button>
+              <el-button size="mini" type="danger" @click="deleteHandler(scope.row.id)">删除<i class="el-icon-delete el-icon--right"/></el-button>
+
             </template>
           </el-table-column>
         </el-table>
@@ -196,9 +193,8 @@ export default {
     };
   },
   created() {
-    this.init();
     this.getDataList();
-    this.contentStyleChange()
+    // this.contentStyleChange()
   },
   mounted() {
 
@@ -334,8 +330,6 @@ export default {
       this.contents.pageEachNum = 10
     },
 
-    init() {
-    },
     search() {
       this.pageIndex = 1;
       this.getDataList();
@@ -382,10 +376,11 @@ export default {
     },
     // 添加/修改
     addOrUpdateHandler(value) {
+      this.file_url = value.value;
+      this.file_id = value.id;
       this.showFlag = false;
       this.addOrUpdateFlag = true;
       this.crossAddOrUpdateFlag = false;
-      this.file_url = value;
     },
     // 查看评论
     // 下载
