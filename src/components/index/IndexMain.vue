@@ -115,8 +115,6 @@ a:hover {
 
 .el-main {
   // background-color: #F6F8FA;
-  padding: 0 24px;
-  min-height: 100vh;
   // padding-top: 60px;
 }
 
