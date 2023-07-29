@@ -38,6 +38,7 @@ import verify from '@/views/modules/verify/index'
 import verify_det from '@/views/modules/verify/det'
 import subjects from '@/views/modules/subjects/index'
 import ModuleList from '@/views/modules/system/ModuleList'
+import questionview from '@/views/modules/question/question_view'
 //2.配置路由   注意：名字
 const routes = [{
     path: '/index',
@@ -64,6 +65,11 @@ const routes = [{
         path: '/question/add/:id',
         name: '题库 / 添加题目',
         component: questionadd,
+        meta: {icon: '', title: 'center'}
+    },{
+        path: '/question/view/:id',
+        name: '题库 / 题目预览',
+        component: questionview,
         meta: {icon: '', title: 'center'}
     },{
         path: '/paper',

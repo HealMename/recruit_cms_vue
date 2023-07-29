@@ -13,11 +13,8 @@
       <div class="user-info" :style="{color:heads.headUserInfoFontColor,fontSize:heads.headUserInfoFontSize}">
         {{ this.$storage.get('adminName').slice(0, 3) }}****{{ this.$storage.get('adminName').slice(7, 11) }}
       </div>
-      <div v-if="this.$storage.get('role')!='管理员'" class="logout"
-           :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}" @click="onIndexTap">退出到前台
-      </div>
       <div class="logout" :style="{color:heads.headLogoutFontColor,fontSize:heads.headLogoutFontSize}"
-           @click="onLogout">退出登录
+           @click="onLogout">登出
       </div>
     </div>
   </div>

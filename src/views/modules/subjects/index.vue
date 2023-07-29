@@ -121,8 +121,8 @@ export default {
     // 获取项目空间
     get_namespace: function () {
       var thsi = this;
-      this.$.get(DOMAIN_API_SYS + "/s8k/namespace_api/", function (res) {
-        thsi.namespace = res.data;
+      this.$http.get(DOMAIN_API_SYS + "/s8k/namespace_api/").then(res =>{
+        thsi.namespace = res.data.data;
       })
     },
     onSubmit: function (page_id) {
@@ -149,9 +149,8 @@ export default {
     detail(id_) {
       this.dialogFormVisible = true;
       var thsi = this;
-      this.$.get(DOMAIN_API_SYS + "/tea/subject/add/?id=" + id_ || '', function (res) {
-        console.log(res)
-        thsi.subject = res.data;
+      this.$http.get(DOMAIN_API_SYS + "/tea/subject/add/?id=" + id_ || '').then(res=>{
+        thsi.subject = res.data.data;
       })
     },
     save: function (formName) {

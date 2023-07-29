@@ -9,8 +9,8 @@
         <el-form-item label="题目ID：">
           <el-input v-model="form.id" disabled></el-input>
         </el-form-item>
-        <el-form-item label="状态：" v-if="open_role.indexOf('1') !== -1">
-          <el-radio-group v-model="form.status">
+        <el-form-item label="状态：">
+          <el-radio-group v-model="form.status" disabled>
             <el-radio label="0" value="0">未审核</el-radio>
             <el-radio label="1" value="1">已审核</el-radio>
           </el-radio-group>
@@ -122,10 +122,8 @@
                      @click="add_answer_step()"></el-button>
         </el-form-item>
       </div>
-      <el-form-item style="margin-top: 80px;">
-        <el-button @click="onSubmit('form')" type="success">保存</el-button>
+      <el-button @click="onSubmit('form')" type="success">保存</el-button>
         <el-button @click="go_bank" type="primary">返回</el-button>
-      </el-form-item>
     </el-form>
   </el-row>
 
@@ -319,8 +317,10 @@ export default {
 
     },
     onSubmit: function (formName) {
+      this.loading = true;
       this.$refs[formName].validate((valid) => {
         if (valid) {
+
           var step_data = []
           var answer_step = []
           this.form.os_detail.forEach((option, i) => {
@@ -334,6 +334,7 @@ export default {
             }
           })
           if (!valid) {
+            this.loading = false;
             return
           }
           this.form.step_list.forEach((option, i) => {
@@ -353,6 +354,7 @@ export default {
             })
           })
           if (!valid) {
+            this.loading = false;
             return
           }
           this.form.answer_list.forEach((option, i) => {
@@ -371,6 +373,10 @@ export default {
               content: option.content
             })
           })
+          if (!valid) {
+            this.loading = false;
+            return
+          }
 
           this.form.os_detail_data = JSON.stringify(this.form.os_detail)
           this.form.step_data = JSON.stringify(step_data)
@@ -385,6 +391,7 @@ export default {
           }
 
         } else {
+          this.loading = false;
           return false;
         }
       });
