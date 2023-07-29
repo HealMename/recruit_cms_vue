@@ -30,7 +30,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="版本：" prop="version">
-          <el-input v-model="form.version"></el-input>
+          <el-input v-model="form.version" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="级别：">
           <el-radio-group v-model="form.level">
@@ -54,15 +54,15 @@
         <el-form-item label="做题时长(分)：" prop="do_time">
           <el-input v-model.number="form.do_time"></el-input>
         </el-form-item>
-        <el-form-item label="考点：" prop="do_points">
-          <el-input v-model="form.do_points"></el-input>
+        <el-form-item label="考点：" prop="do_points" >
+          <el-input v-model="form.do_points" maxlength="50" show-word-limit></el-input>
         </el-form-item>
 
         <el-form-item label="题目标题：" prop="title">
-          <el-input v-model="form.title"></el-input>
+          <el-input v-model="form.title" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="题目描述：" prop="desc">
-          <el-input type="textarea" v-model="form.desc"></el-input>
+          <el-input type="textarea" v-model="form.desc" maxlength="200" show-word-limit></el-input>
         </el-form-item>
         <el-form-item
             v-for="(domain, index) in form.os_detail"
@@ -211,7 +211,7 @@ export default {
       rules: {
         do_time: [{validator: checkdo_time, trigger: 'blur'}],
         version: [{required: true, message: '请输入版本', trigger: 'blur'},
-          {min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur'}],
+          {min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur'}],
         title: [{required: true, message: '请输入题目标题', trigger: 'blur'},
           {min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur'}],
         do_points: [{required: true, message: '请输入考点', trigger: 'blur'},
