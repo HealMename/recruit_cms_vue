@@ -2,7 +2,7 @@
   <el-row v-loading="loading">
     <!--面试官-->
     <el-col :span="24" >
-      <el-descriptions class="margin-top" title="" :column="3" border>
+      <el-descriptions class="margin-top" title="" :column="3" border size="mini">
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-user"></i>

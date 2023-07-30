@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-col :span="12">
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="80px" size="mini">
         <el-form-item label="手机号">
           <el-input v-model="form.id" placeholder="输入用户ID或手机号"></el-input>
         </el-form-item>
@@ -30,7 +30,7 @@
       <el-table
           v-loading="loading"
           :data="tableData"
-          border
+          border size="mini"
           style="width: 100%">
         <el-table-column
             prop="id"

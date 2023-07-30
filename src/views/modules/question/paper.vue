@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-col :span="12">
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="80px" size="mini">
         <el-form-item label="试卷ID">
           <el-input v-model="form.id" placeholder="输入试卷ID或名称"></el-input>
         </el-form-item>
@@ -23,7 +23,7 @@
       <el-table
           v-loading="loading"
           :data="tableData"
-          border
+          border size="mini"
           style="width: 100%">
         <el-table-column
             prop="id"

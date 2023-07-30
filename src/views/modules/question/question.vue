@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
 
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="80px" size="mini">
         <el-form-item label="题目ID：">
           <el-input v-model="form.id" placeholder="输入题目ID或内容" style="width: 222px"></el-input>
         </el-form-item>
@@ -53,7 +53,7 @@
       <el-table
           v-loading="loading"
           :data="tableData"
-          border
+          border size="mini"
           style="width: 100%">
         <el-table-column
             prop="id"

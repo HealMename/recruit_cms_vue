@@ -8,7 +8,7 @@
             <span>基本信息</span>
           </div>
           <el-form
-
+              size="mini"
               class="detail-form-content"
               :ref="ruleForm1"
               :model="ruleForm"
@@ -88,7 +88,7 @@
               <span>学历信息</span>
             </div>
             <el-card class="box-card" v-for="(item,i) in ruleForm.school_list" :key="i" :body-style="boxcard">
-              <el-form ref="school_ref" :model="item" label-width="100px">
+              <el-form ref="school_ref" :model="item" label-width="100px" size="mini">
                 <el-divider>学历 {{ i + 1 }}</el-divider>
                 <el-form-item label="学历:" prop="education">
                   <template>
@@ -161,7 +161,7 @@
               <span>工作经历</span>
             </div>
             <el-card class="box-card" v-for="(item,i) in ruleForm.work_list" :key="i" :body-style="boxcard">
-              <el-form ref="work_rules" :model="item" label-width="100px">
+              <el-form ref="work_rules" :model="item" label-width="100px" size="mini">
                 <el-divider>工作经历{{ i + 1 }}</el-divider>
                 <el-form-item label="公司名:" prop="name">
                   <el-input v-model="item.name" maxlength="10" readonly></el-input>
@@ -213,7 +213,7 @@
             <div slot="header" class="clearfix">
               <span>其他证明</span>
             </div>
-            <el-form ref="prove_rules" :model="ruleForm.prove" label-width="100px">
+            <el-form ref="prove_rules" :model="ruleForm.prove" label-width="100px" size="mini">
               <el-divider>其他证明材料</el-divider>
               <el-form-item label="在职证明:" prop="work">
                 <el-upload
@@ -269,7 +269,7 @@
               <span>掌握技能</span>
             </div>
             <el-card class="box-card" v-for="(item,i) in ruleForm.knowledge_list" :key="i" :body-style="boxcard">
-                            <el-form ref="knowledge_rules" :model="item" label-width="120px" >
+                            <el-form ref="knowledge_rules" :model="item" label-width="120px" size="mini">
                                 <el-divider>专业技能</el-divider>
                                 <el-form-item label="技能类型:">
                                     <template>
