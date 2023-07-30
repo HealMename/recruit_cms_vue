@@ -338,6 +338,7 @@ export default {
             return
           }
           this.form.step_list.forEach((option, i) => {
+            option.content = option.content.replaceAll('&nbsp;', ' ')
             if (!option.content.length) {
               this.$layer_message(`解题步骤${i + 1}不能为空！`)
               valid = false
@@ -358,6 +359,7 @@ export default {
             return
           }
           this.form.answer_list.forEach((option, i) => {
+            option.content = option.content.replaceAll('&nbsp;', ' ')
             if (!option.content.length) {
               this.$layer_message(`答题步骤${i + 1}不能为空！`)
               valid = false
