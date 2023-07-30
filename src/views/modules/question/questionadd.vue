@@ -1,7 +1,7 @@
 <template>
   <el-row v-loading="loading">
 
-    <el-form ref="form" :model="form" label-width="120px" :rules="rules">
+    <el-form ref="form" :model="form" label-width="120px" :rules="rules" size="mini">
       <div class="base_info">
 
         <el-form-item label="基本属性" style="width: 77px;">

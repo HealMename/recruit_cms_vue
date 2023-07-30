@@ -22,7 +22,7 @@
 
           :data="tableData"
           border
-          style="width: 100%">
+          style="width: 100%" size="mini">
         <el-table-column
             prop="id"
             align="center"
