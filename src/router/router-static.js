@@ -38,6 +38,7 @@ import verify from '@/views/modules/verify/index'
 import verify_det from '@/views/modules/verify/det'
 import subjects from '@/views/modules/subjects/index'
 import ModuleList from '@/views/modules/menu_list/list'
+import ModuleRole from '@/views/modules/menu_list/role_module'
 import questionview from '@/views/modules/question/question_view'
 //2.配置路由   注意：名字
 const routes = [{
@@ -45,6 +46,11 @@ const routes = [{
     name: '首页',
     component: Index,
     children: [{
+        path: '/module/role',
+        name: '角色授权',
+        component: ModuleRole,
+        meta: {icon: '', title: 'center'}
+    },{
         path: '/module/list',
         name: '模块管理',
         component: ModuleList,

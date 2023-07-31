@@ -4,60 +4,20 @@
     <div v-if="showFlag">
       <el-form :inline="true" :model="searchForm" class="form-content">
         <el-row  :gutter="20" class="slt" :style="{justifyContent:contents.searchBoxPosition=='1'?'flex-start':contents.searchBoxPosition=='2'?'center':'flex-end'}">
-                <el-form-item :label="contents.inputTitle == 1 ? '城市' : ''">
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 1" prefix-icon="el-icon-search" v-model="searchForm.chengshi" placeholder="城市" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 1 && contents.inputIconPosition == 2" suffix-icon="el-icon-search" v-model="searchForm.chengshi" placeholder="城市" clearable></el-input>
-                  <el-input v-if="contents.inputIcon == 0" v-model="searchForm.chengshi" placeholder="城市" clearable></el-input>
+                <el-form-item label="城市">
+                  <el-input  v-model="searchForm.chengshi" placeholder="城市" clearable></el-input>
                 </el-form-item>
           <el-form-item>
-            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 1" icon="el-icon-search"  @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
-            <el-button v-if="contents.searchBtnIcon == 1 && contents.searchBtnIconPosition == 2"  @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}<i class="el-icon-search el-icon--right"/></el-button>
-            <el-button v-if="contents.searchBtnIcon == 0"  @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
+            <el-button  icon="el-icon-search"  @click="search()">{{ contents.searchBtnFont == 1?'查询':'' }}</el-button>
           </el-form-item>
         </el-row>
 
         <el-row class="ad" :style="{justifyContent:contents.btnAdAllBoxPosition=='1'?'flex-start':contents.btnAdAllBoxPosition=='2'?'center':'flex-end'}">
           <el-form-item>
             <el-button
-              v-if="isAuth('chengshi','新增') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1"
-
               icon="el-icon-plus"
               @click="addOrUpdateHandler()"
             >新增</el-button>
-            <el-button
-              v-if="isAuth('chengshi','新增') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2"
-
-              @click="addOrUpdateHandler()"
-            >新增<i class="el-icon-plus el-icon--right" /></el-button>
-            <el-button
-              v-if="isAuth('chengshi','新增') && contents.btnAdAllIcon == 0"
-
-              @click="addOrUpdateHandler()"
-            >新增</el-button>
-            <el-button
-              v-if="isAuth('chengshi','删除') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 1 && contents.tableSelection"
-              :disabled="dataListSelections.length <= 0"
-              type="danger"
-              icon="el-icon-delete"
-              @click="deleteHandler()"
-            >删除</el-button>
-            <el-button
-              v-if="isAuth('chengshi','删除') && contents.btnAdAllIcon == 1 && contents.btnAdAllIconPosition == 2 && contents.tableSelection"
-              :disabled="dataListSelections.length <= 0"
-              type="danger"
-              @click="deleteHandler()"
-            >删除<i class="el-icon-delete el-icon--right" /></el-button>
-            <el-button
-              v-if="isAuth('chengshi','删除') && contents.btnAdAllIcon == 0 && contents.tableSelection"
-              :disabled="dataListSelections.length <= 0"
-              type="danger"
-              @click="deleteHandler()"
-            >删除</el-button>
-
-
-
-
-
           </el-form-item>
         </el-row>
       </el-form>
@@ -68,16 +28,11 @@
             :fit="contents.tableFit"
             :stripe="contents.tableStripe"
             :style="{width: '100%',fontSize:contents.tableContentFontSize,color:contents.tableContentFontColor}"
-            v-if="isAuth('chengshi','查看')"
+
             :data="dataList"
             v-loading="dataListLoading"
             @selection-change="selectionChangeHandler">
-            <el-table-column  v-if="contents.tableSelection"
-                type="selection"
-                :header-align="contents.tableAlign"
-                align="center"
-                width="50">
-            </el-table-column>
+
             <el-table-column label="索引" :align="contents.tableAlign"  v-if="contents.tableIndex" type="index" width="50" />
                 <el-table-column  :sortable="contents.tableSortable" :align="contents.tableAlign" 
                     prop="chengshi"
@@ -91,16 +46,9 @@
                :header-align="contents.tableAlign"
                 label="操作">
                 <template slot-scope="scope">
-                <el-button v-if=" isAuth('chengshi','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1"  icon="el-icon-edit" size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
-                <el-button v-if=" isAuth('chengshi','修改') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2"  size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}<i class="el-icon-edit el-icon--right" /></el-button>
-                <el-button v-if=" isAuth('chengshi','修改') && contents.tableBtnIcon == 0"  size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
+                <el-button   size="mini" @click="addOrUpdateHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'修改':'' }}</el-button>
 
-
-
-
-                <el-button v-if="isAuth('chengshi','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 1" type="danger" icon="el-icon-delete" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
-                <el-button v-if="isAuth('chengshi','删除') && contents.tableBtnIcon == 1 && contents.tableBtnIconPosition == 2" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}<i class="el-icon-delete el-icon--right" /></el-button>
-                <el-button v-if="isAuth('chengshi','删除') && contents.tableBtnIcon == 0" type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
+                <el-button  type="danger" size="mini" @click="deleteHandler(scope.row.id)">{{ contents.tableBtnFont == 1?'删除':'' }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -150,7 +98,7 @@ export default {
       shForm: {},
       chartVisiable: false,
       addOrUpdateFlag:false,
-      contents:{"searchBtnFontColor":"rgba(255, 255, 255, 1)","pagePosition":"1","inputFontSize":"14px","inputBorderRadius":"4px","tableBtnDelFontColor":"rgba(101, 126, 253, 1)","tableBtnIconPosition":"1","searchBtnHeight":"40px","tableBgColor":"#f5f5f5","inputIconColor":"rgba(101, 126, 253, 1)","searchBtnBorderRadius":"10px","tableStripe":true,"btnAdAllWarnFontColor":"rgba(255, 255, 255, 1)","tableBtnDelBgColor":"#fff","searchBtnIcon":"1","tableSize":"medium","searchBtnBorderStyle":"solid","tableSelection":true,"text":{"padding":"0","boxShadow":"0 0 6px rgba(0,0,0,.1)","margin":"0 auto","borderColor":"rgba(0,0,0,.3)","backgroundColor":"#f7f7f7","color":"#333","borderRadius":"6px","borderWidth":"0","width":"auto","lineHeight":"auto","fontSize":"24px","borderStyle":"solid"},"searchBtnBorderWidth":"0px","tableContentFontSize":"14px","searchBtnBgColor":"rgba(101, 126, 253, 1)","inputTitleSize":"14px","btnAdAllBorderColor":"rgba(0, 71, 238, 1)","pageJumper":true,"btnAdAllIconPosition":"1","searchBoxPosition":"1","tableBtnDetailFontColor":"rgba(101, 126, 253, 1)","tableBtnHeight":"40px","pagePager":true,"searchBtnBorderColor":"rgb(50, 65, 87)","tableHeaderFontColor":"#909399","inputTitle":"0","tableBtnBorderRadius":"4px","btnAdAllFont":"0","btnAdAllDelFontColor":"rgba(255, 255, 255, 1)","tableBtnIcon":"0","btnAdAllHeight":"40px","btnAdAllWarnBgColor":"rgba(101, 126, 253, 1)","btnAdAllBorderWidth":"0px","tableStripeFontColor":"#606266","tableBtnBorderStyle":"solid","inputHeight":"40px","btnAdAllBorderRadius":"18px","btnAdAllDelBgColor":"rgba(205, 32, 31, 1)","pagePrevNext":true,"btnAdAllAddBgColor":"rgba(40, 167, 69, 1)","searchBtnFont":"1","tableIndex":true,"btnAdAllIcon":"1","tableSortable":false,"pageSizes":true,"tableFit":true,"pageBtnBG":true,"searchBtnFontSize":"14px","tableBtnEditBgColor":"rgba(255, 255, 255, 1)","inputBorderWidth":"1px","box":{"padding":"10px 20px","boxShadow":"0 0 6px rgba(0,0,0,0)","flag":1,"backgroundImage":"","background":"#fff"},"inputFontPosition":"1","inputFontColor":"#333","pageEachNum":10,"tableHeaderBgColor":"#fff","inputTitleColor":"#333","btnAdAllBoxPosition":"3","tableBtnDetailBgColor":"#fff","inputIcon":"1","searchBtnIconPosition":"2","btnAdAllFontSize":"16px","inputBorderStyle":"solid","tableHoverFontColor":"#333","inputBgColor":"#fff","pageStyle":false,"pageTotal":true,"btnAdAllAddFontColor":"rgba(255, 255, 255, 1)","tableBtnFont":"1","tableContentFontColor":"#606266","inputBorderColor":"#DCDFE6","tableShowHeader":true,"tableHoverBgColor":"#f5f5f5","tableBtnFontSize":"14px","tableBtnBorderColor":"rgba(101, 126, 253, 1)","inputIconPosition":"2","tableBorder":true,"btnAdAllBorderStyle":"solid","tableBtnBorderWidth":"1px","tableStripeBgColor":"#F5F7FA","tableBtnEditFontColor":"rgba(101, 126, 253, 1)","tableAlign":"center"},
+      contents:{"searchBtnFontColor":"rgba(255, 255, 255, 1)","pagePosition":"1","inputFontSize":"14px","inputBorderRadius":"4px","tableBtnDelFontColor":"rgba(101, 126, 253, 1)","tableBtnIconPosition":"1","searchBtnHeight":"40px","tableBgColor":"#f5f5f5","inputIconColor":"rgba(101, 126, 253, 1)","searchBtnBorderRadius":"10px","tableStripe":true,"btnAdAllWarnFontColor":"rgba(255, 255, 255, 1)","tableBtnDelBgColor":"#fff","searchBtnIcon":"1","tableSize":"medium","searchBtnBorderStyle":"solid","tableSelection":false,"text":{"padding":"0","boxShadow":"0 0 6px rgba(0,0,0,.1)","margin":"0 auto","borderColor":"rgba(0,0,0,.3)","backgroundColor":"#f7f7f7","color":"#333","borderRadius":"6px","borderWidth":"0","width":"auto","lineHeight":"auto","fontSize":"24px","borderStyle":"solid"},"searchBtnBorderWidth":"0px","tableContentFontSize":"14px","searchBtnBgColor":"rgba(101, 126, 253, 1)","inputTitleSize":"14px","btnAdAllBorderColor":"rgba(0, 71, 238, 1)","pageJumper":true,"btnAdAllIconPosition":"1","searchBoxPosition":"1","tableBtnDetailFontColor":"rgba(101, 126, 253, 1)","tableBtnHeight":"40px","pagePager":true,"searchBtnBorderColor":"rgb(50, 65, 87)","tableHeaderFontColor":"#909399","inputTitle":"0","tableBtnBorderRadius":"4px","btnAdAllFont":"0","btnAdAllDelFontColor":"rgba(255, 255, 255, 1)","tableBtnIcon":"0","btnAdAllHeight":"40px","btnAdAllWarnBgColor":"rgba(101, 126, 253, 1)","btnAdAllBorderWidth":"0px","tableStripeFontColor":"#606266","tableBtnBorderStyle":"solid","inputHeight":"40px","btnAdAllBorderRadius":"18px","btnAdAllDelBgColor":"rgba(205, 32, 31, 1)","pagePrevNext":true,"btnAdAllAddBgColor":"rgba(40, 167, 69, 1)","searchBtnFont":"1","tableIndex":true,"btnAdAllIcon":"1","tableSortable":false,"pageSizes":true,"tableFit":true,"pageBtnBG":true,"searchBtnFontSize":"14px","tableBtnEditBgColor":"rgba(255, 255, 255, 1)","inputBorderWidth":"1px","box":{"padding":"10px 20px","boxShadow":"0 0 6px rgba(0,0,0,0)","flag":1,"backgroundImage":"","background":"#fff"},"inputFontPosition":"1","inputFontColor":"#333","pageEachNum":10,"tableHeaderBgColor":"#fff","inputTitleColor":"#333","btnAdAllBoxPosition":"3","tableBtnDetailBgColor":"#fff","inputIcon":"1","searchBtnIconPosition":"2","btnAdAllFontSize":"16px","inputBorderStyle":"solid","tableHoverFontColor":"#333","inputBgColor":"#fff","pageStyle":false,"pageTotal":true,"btnAdAllAddFontColor":"rgba(255, 255, 255, 1)","tableBtnFont":"1","tableContentFontColor":"#606266","inputBorderColor":"#DCDFE6","tableShowHeader":true,"tableHoverBgColor":"#f5f5f5","tableBtnFontSize":"14px","tableBtnBorderColor":"rgba(101, 126, 253, 1)","inputIconPosition":"2","tableBorder":true,"btnAdAllBorderStyle":"solid","tableBtnBorderWidth":"1px","tableStripeBgColor":"#F5F7FA","tableBtnEditFontColor":"rgba(101, 126, 253, 1)","tableAlign":"center"},
       layouts: '',
 
 

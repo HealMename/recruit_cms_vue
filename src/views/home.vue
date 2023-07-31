@@ -24,10 +24,12 @@ export default {
                 method: "get"
             }).then(({ data }) => {
                 if (data && data.code != 0) {
+                  this.$storage.clear();
                 router.push({ name: 'login' })
                 }
             });
         }else{
+          this.$storage.clear();
             router.push({ name: 'login' })
         }
     }

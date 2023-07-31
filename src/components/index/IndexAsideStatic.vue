@@ -17,7 +17,7 @@
           <el-submenu v-for=" (menu,index) in menuList" :key="menu.id" :index="index+2+''"
                       style="border-color: rgb(50, 65, 87) !important">
             <template slot="title">
-              <i v-if="true" class="el-icon-menu" :class="icons[index]"/>
+              <i class="el-icon-menu" :class="menu.icon"/>
               <span>{{ menu.mod_name }}</span>
             </template>
             <el-menu-item v-for=" (child,sort) in menu.child" :key="sort" :index="(index+2)+'-'+sort"
@@ -39,47 +39,6 @@ export default {
       menuList: [],
       dynamicMenuRoutes: [],
       role: '',
-      icons: [
-        'el-icon-s-cooperation',
-        'el-icon-s-order',
-        'el-icon-s-platform',
-        'el-icon-s-fold',
-        'el-icon-s-unfold',
-        'el-icon-s-operation',
-        'el-icon-s-promotion',
-        'el-icon-s-release',
-        'el-icon-s-ticket',
-        'el-icon-s-management',
-        'el-icon-s-open',
-        'el-icon-s-shop',
-        'el-icon-s-marketing',
-        'el-icon-s-flag',
-        'el-icon-s-comment',
-        'el-icon-s-finance',
-        'el-icon-s-claim',
-        'el-icon-s-custom',
-        'el-icon-s-opportunity',
-        'el-icon-s-data',
-        'el-icon-s-check',
-        'el-icon-s-grid',
-        'el-icon-menu',
-        'el-icon-chat-dot-square',
-        'el-icon-message',
-        'el-icon-postcard',
-        'el-icon-position',
-        'el-icon-microphone',
-        'el-icon-close-notification',
-        'el-icon-bangzhu',
-        'el-icon-time',
-        'el-icon-odometer',
-        'el-icon-crop',
-        'el-icon-aim',
-        'el-icon-switch-button',
-        'el-icon-full-screen',
-        'el-icon-copy-document',
-        'el-icon-mic',
-        'el-icon-stopwatch',
-      ],
       menulistStyle: 'vertical',
       menulistBorderBottom: {},
     }
@@ -102,9 +61,7 @@ export default {
     setTimeout(() => {
       this.menulistStyleChange()
     }, 10)
-    this.icons.sort(() => {
-      return (0.5 - Math.random())
-    })
+
     this.lineBorder()
   },
   methods: {
