@@ -1,7 +1,7 @@
 <template>
   <el-row>
-  <el-tabs v-model="activeName" @tab-click="handleClick" >
-    <el-tab-pane label="基本信息" name="first" v-loading="loading">
+  <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading">
+    <el-tab-pane label="基本信息" name="first" >
       <div>
         <el-card class="box-card">
           <div slot="header" class="clearfix">
@@ -324,7 +324,15 @@ export default {
       upload_url: "/",
       activeName: "first",
       loading: false,
-      ruleForm: {},
+      ruleForm: {
+        form: {
+          imageUrl1: '',
+          imageUrl2: '',
+        },
+        prove: {
+          work: ''
+        }
+      },
       ruleForm1: {
         name: [{required: true, message: '请填写姓名', trigger: 'blur'},
           {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}],
@@ -361,6 +369,11 @@ export default {
         });
       this.$http.get(DOMAIN_API_SYS + "/tea/userinfo/").then(res => {
       this.ruleForm = res.data.data;
+      if (!res.data.data.prove){
+        this.ruleForm.prove = {
+          work: ''
+        }
+      }
       this.$.each(this.ruleForm.school_list, function (i) {
         this.time = [
           new Date(this.time[0].substring(0, 4),
@@ -441,6 +454,7 @@ export default {
   height: 178px;
   line-height: 178px;
   text-align: center;
+  border: 1px solid #DCDFE6
 }
 
 .avatar {

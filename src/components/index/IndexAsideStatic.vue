@@ -1,9 +1,9 @@
 <template>
-  <el-aside class="index-aside" width="210px">
+  <el-aside class="index-aside" width="190px">
     <div class="index-aside-inner menulist">
       <div class="menulist-item">
 
-        <el-menu :mode="2 == 1? 'horizontal':'vertical'" :unique-opened="true" class="el-menu-demo" default-active="">
+        <el-menu mode="vertical" :unique-opened="true" class="el-menu-demo" default-active="">
           <el-menu-item index="0" @click="menuHandler('')"><i v-if="true" class="el-icon-menu el-icon-s-home"/>首页
           </el-menu-item>
           <el-submenu :index="'1'">
@@ -11,7 +11,6 @@
               <i v-if="true" class="el-icon-menu el-icon-user-solid"/>
               <span>个人中心</span>
             </template>
-            <el-menu-item :index="'1-1'" @click="menuHandler('updatePassword')">修改密码</el-menu-item>
             <el-menu-item :index="'1-2'" @click="menuHandler('center')">个人信息</el-menu-item>
           </el-submenu>
           <el-submenu v-for=" (menu,index) in menuList" :key="menu.id" :index="index+2+''"
@@ -31,133 +30,41 @@
 </template>
 
 <script>
-import menu from '@/utils/menu'
+import router from '@/router/router-static'
 
 export default {
   data() {
     return {
       menuList: [],
-      dynamicMenuRoutes: [],
       role: '',
-      menulistStyle: 'vertical',
-      menulistBorderBottom: {},
     }
   },
   mounted() {
-    let params = {
-        role: this.$storage.get('role'),
-      }
+
       this.$http({
-        url: `${DOMAIN_API_SYS}/django7681v/menu_list/?role=${this.$storage.get('role')}`,
+        url: `menu_list/`,
         method: "get",
-        params: params
       }).then(({data}) => {
+        if (data.code === 401){
+          this.$storage.clear();
+          router.push({ name: 'login' })
+        }
         this.menuList = data.data;
           this.$storage.set("menus", this.menuList);
       })
     this.role = this.$storage.get('role')
   },
   created() {
-    setTimeout(() => {
-      this.menulistStyleChange()
-    }, 10)
-
-    this.lineBorder()
+    //
   },
   methods: {
-    lineBorder() {
-      let style = 'vertical'
-      let w = '1px'
-      let s = 'solid'
-      let c = '#ccc'
-      if (style == 'vertical') {
-        this.menulistBorderBottom = {
-          borderBottomWidth: w,
-          borderBottomStyle: s,
-          borderBottomColor: c
-        }
-      } else {
-        this.menulistBorderBottom = {
-          borderRightWidth: w,
-          borderRightStyle: s,
-          borderRightColor: c
-        }
-      }
-    },
+
     menuHandler(name) {
       let router = this.$router
       name = '/' + name
       router.push(name)
     },
-    // 菜单
-    setMenulistHoverColor() {
-      let that = this
-      return;
-      this.$nextTick(() => {
-        document.querySelectorAll('.menulist .el-menu-item').forEach(el => {
-          el.addEventListener("mouseenter", e => {
-            e.stopPropagation()
-            el.style.backgroundColor = "rgba(101, 126, 253, 1)"
-          })
-          el.addEventListener("mouseleave", e => {
-            e.stopPropagation()
-            // el.style.backgroundColor = "rgb(50, 65, 87)"
-            el.style.background = "none"
-          })
-          el.addEventListener("focus", e => {
-            e.stopPropagation()
-            el.style.backgroundColor = "rgba(101, 126, 253, 1)"
-          })
-        })
-        document.querySelectorAll('.menulist .el-submenu__title').forEach(el => {
-          el.addEventListener("mouseenter", e => {
-            e.stopPropagation()
-            el.style.backgroundColor = "rgba(101, 126, 253, 1)"
-          })
-          el.addEventListener("mouseleave", e => {
-            e.stopPropagation()
-            // el.style.backgroundColor = "rgb(50, 65, 87)"
-            el.style.background = "none"
-          })
-        })
-      })
-    },
-    setMenulistIconColor() {
-      this.$nextTick(() => {
-        document.querySelectorAll('.menulist .el-submenu__title .el-submenu__icon-arrow').forEach(el => {
-          el.style.color = "rgb(50, 65, 87)"
-        })
-      })
-    },
-    menulistStyleChange() {
-      this.setMenulistIconColor()
-      this.setMenulistHoverColor()
-      let str = "2"
-      if (1 == str) {
-        this.$nextTick(() => {
-          document.querySelectorAll('.el-container .el-container').forEach(el => {
-            el.style.display = "block"
-            el.style.paddingTop = "60px" // header 高度
-          })
-          document.querySelectorAll('.el-aside').forEach(el => {
-            el.style.width = "100%"
-            el.style.height = "100%"
-            el.style.paddingTop = '0'
-          })
-          document.querySelectorAll('.index-aside .index-aside-inner').forEach(el => {
-            el.style.paddingTop = '0'
-            el.style.width = "100%"
-          })
-        })
-      }
-      if (2 === str) {
-        this.$nextTick(() => {
-          document.querySelectorAll('.index-aside .index-aside-inner').forEach(el => {
-            el.style.paddingTop = "60px"
-          })
-        })
-      }
-    },
+
 
   }
 }
@@ -210,7 +117,7 @@ export default {
   }
 
   .menulist-item {
-    width: 210px;
+    width: 190px;
     margin: 0;
     border-radius: 0;
     border-width: 0 0 0px 0 !important;
@@ -230,7 +137,7 @@ export default {
       height: auto !important;
       line-height: 35px !important;
       padding: 10px 22px 10px 10px;
-      color: rgba(255, 255, 255, 1);
+      color: rgb(191, 203, 217);
       font-size: 14px;
       border-radius: 0;
       border-width: 0 0 1px 0;
@@ -238,7 +145,6 @@ export default {
       border-color: rgba(218, 218, 218, 0.15) !important;
       background-color: rgb(50, 65, 87) !important;
       box-shadow: 0 0 6px rgba(255, 255, 255, 0);
-      box-sizing: initial;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -268,7 +174,7 @@ export default {
       height: auto !important;
       line-height: 35px !important;
       padding: 10px 22px 10px 10px;
-      color: rgba(255, 255, 255, 1);
+      color: rgb(191, 203, 217);
       font-size: 14px;
       border-radius: 0;
       border-width: 0 0 1px 0;
@@ -276,7 +182,6 @@ export default {
       border-color: rgba(218, 218, 218, 0.15) !important;
       background-color: rgb(50, 65, 87) !important;
       box-shadow: 0 0 6px rgba(255, 255, 255, 0);
-      box-sizing: initial;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -337,7 +242,7 @@ export default {
         line-height: 44px;
         padding: 0 0 0 30px !important;
         margin: 0;
-        color: rgba(255, 255, 255, 1) !important;
+        color: rgb(191, 203, 217) !important;
         font-size: 14px;
         border-radius: 0;
         border-width: 0;
