@@ -423,6 +423,7 @@ export default {
       isShow: false,
       disabled: false,
       go_login_second: 3,
+      timeout: null,
     };
   },
   // is-disabled
@@ -475,7 +476,7 @@ export default {
         // 时间减一
         second--;
         // 一秒后重复执行
-        setTimeout(function () {
+        this.timeout = setTimeout(function () {
           thsi.countDown(obj, second);
         }, 1000);
         // 否则，按钮重置为初始状态
@@ -587,6 +588,7 @@ export default {
               thsi.send_phone_number = ''
               thsi.$(".getcode").css('background-color', '#00c292')
               thsi.$(".getcode")[0].textContent = '发送验证码';
+              clearTimeout(thsi.timeout)
               if (thsi.active === 3) {
                 thsi.init_data()
               }
@@ -630,6 +632,7 @@ export default {
               thsi.send_phone_number = ''
               thsi.$(".getcode").css('background-color', '#00c292')
               thsi.$(".getcode")[0].textContent = '发送验证码';
+              clearTimeout(thsi.timeout)
               if (thsi.active === 3) {
                 thsi.$storage.clear();
                 thsi.go_login(3)
