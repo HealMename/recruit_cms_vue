@@ -16,7 +16,7 @@
                 style="background: transparent;"
             >
               <el-form-item label="手机:" prop="phone_number">
-                {{ ruleForm.phone_number }}
+                {{ ruleForm.phone_number.slice(0, 3) }}****{{ ruleForm.phone_number.slice(7, 11) }}
                 <el-button type="primary" icon="el-icon-edit" circle
                            @click="dialog_phone = true;active = 1"></el-button>
               </el-form-item>
@@ -30,7 +30,7 @@
                   {{ ruleForm.name }}
                 </el-form-item>
                 <el-form-item label="身份证:" prop="number_id">
-                  {{ ruleForm.number_id }}
+                  {{ ruleForm.number_id.slice(0, 3) }}***********{{ ruleForm.number_id.slice(14, 18) }}
                 </el-form-item>
               </div>
               <el-form-item label="身份证:" prop="ocr_info_front" v-if="loading === false">
@@ -67,7 +67,7 @@
             </el-steps>
             <el-form v-if="active === 1" label-width="80px">
               <el-form-item label="原手机号:">
-                <el-input v-model="ruleForm.phone_number" autocomplete="off" disabled></el-input>
+                <el-input v-model="ruleForm.phone_number.slice(0, 3)+ '****' + ruleForm.phone_number.slice(7, 11)" autocomplete="off" disabled></el-input>
               </el-form-item>
               <el-form-item label="验证码:">
                 <el-input v-model="code" autocomplete="off" maxlength="6"></el-input>
