@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading">
-      <el-tab-pane label="基本信息" name="first">
+      <el-tab-pane label="基本信息" name="first" id="first">
         <div>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -10,7 +10,6 @@
             <el-form
                 size="mini"
                 class="detail-form-content"
-                :ref="ruleForm1"
                 :model="ruleForm"
                 label-width="120px"
                 style="background: transparent;"
@@ -41,18 +40,18 @@
                     <el-table-column
                         prop="imageUrl1"
                         label="正面" align="center">
-                      <el-image style="width: 328px; height: 178px" :src="ruleForm.form.imageUrl1"
+                      <el-image :src="ruleForm.form.imageUrl1"
                                 fit="fill"></el-image>
                     </el-table-column>
                     <el-table-column
                         prop="imageUrl2"
                         label="背面" align="center">
-                      <el-image style="width: 328px; height: 178px" :src="ruleForm.form.imageUrl2"
+                      <el-image :src="ruleForm.form.imageUrl2"
                                 fit="fill"></el-image>
                     </el-table-column>
                   </el-table>
                 </el-dialog>
-                <el-button type="text" @click="img_dialog = true;">点击查看</el-button>
+                <el-button type="text" @click="img_dialog = true;">查看</el-button>
               </el-form-item>
             </el-form>
           </el-card>
@@ -67,7 +66,8 @@
             </el-steps>
             <el-form v-if="active === 1" label-width="80px">
               <el-form-item label="原手机号:">
-                <el-input v-model="ruleForm.phone_number.slice(0, 3)+ '****' + ruleForm.phone_number.slice(7, 11)" autocomplete="off" disabled></el-input>
+                <el-input v-model="ruleForm.phone_number.slice(0, 3)+ '****' + ruleForm.phone_number.slice(7, 11)"
+                          autocomplete="off" disabled></el-input>
               </el-form-item>
               <el-form-item label="验证码:">
                 <el-input v-model="code" autocomplete="off" maxlength="6"></el-input>
@@ -108,7 +108,8 @@
             </el-steps>
             <el-form v-if="active === 1" label-width="80px">
               <el-form-item label="原手机号:">
-                <el-input v-model="ruleForm.phone_number" autocomplete="off" disabled></el-input>
+                <el-input v-model="ruleForm.phone_number.slice(0, 3)+ '****' + ruleForm.phone_number.slice(7, 11)"
+                          autocomplete="off" disabled></el-input>
               </el-form-item>
               <el-form-item label="验证码:">
                 <el-input v-model="code" autocomplete="off" maxlength="6"></el-input>
@@ -136,9 +137,117 @@
             <el-button type="primary" @click="next_email_verify();" v-if="active !== 3">下一步</el-button>
           </span>
           </el-dialog>
+          <el-card class="box-card school_list">
+            <div slot="header" class="clearfix">
+              <span>学历信息 <el-button style="float: right;" type="text"
+                                    @click="update_data('school', 1)">修改</el-button></span>
+            </div>
+            <el-dialog title="学历证书" :visible.sync="school_img_dialog">
+              <el-table
+                  style="width: 100%"
+                  :data="[{'imageUrl1': ruleForm.form.imageUrl1, 'imageUrl2': ruleForm.form.imageUrl1}]">
+                <el-table-column
+                    prop="imageUrl1"
+                    label="毕业证" align="center"
+                    v-if="education !== '在校学生' && education !== '' && diploma">
+                  <el-image :src="diploma"
+                            fit="fill"></el-image>
+                </el-table-column>
+                <el-table-column
+                    prop="imageUrl2"
+                    label="学位证" align="center"
+                    v-if="education !== '在校学生' && education !== '' && degree">
+                  <el-image :src="degree"
+                            fit="fill"></el-image>
+                </el-table-column>
+                <el-table-column
+                    prop="imageUrl2"
+                    label="学生证" align="center" v-if="education === '在校学生' && stu_card">
+                  <el-image :src="stu_card"
+                            fit="fill"></el-image>
+                </el-table-column>
+              </el-table>
+            </el-dialog>
+            <el-card class="box-card" v-for="(item,i) in ruleForm.school_list" :key="i" :body-style="boxcard">
+              <el-descriptions :title="'学历'+ (i + 1)">
+                <el-descriptions-item label="学历">{{ item.education }}</el-descriptions-item>
+                <el-descriptions-item label="学校">{{ item.school }}</el-descriptions-item>
+                <el-descriptions-item label="专业">{{ item.speciality }}</el-descriptions-item>
+                <el-descriptions-item label="上学时间">
+                  <span v-text="handle_time(item.time)"></span>
+                </el-descriptions-item>
+                <el-descriptions-item label="证书">
+                  <el-button type="text" @click="look_school(item)">查看</el-button>
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </el-card>
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>工作经历 <el-button style="float: right;" type="text"
+                                    @click="update_data('work', 2)">修改</el-button></span>
+            </div>
+            <el-card class="box-card" v-for="(item,i) in ruleForm.work_list" :key="i" :body-style="boxcard">
+              <el-descriptions :title="'工作经历' + (i + 1)">
+                <el-descriptions-item label="公司名称">{{ item.name }}</el-descriptions-item>
+                <el-descriptions-item label="从事行业">{{ item.industry }}</el-descriptions-item>
+                <el-descriptions-item label="工作岗位">{{ item.post }}</el-descriptions-item>
+                <el-descriptions-item label="技能关键词" v-if="item.keyword !== '其他技能'">{{ item.keyword }}
+                </el-descriptions-item>
+                <el-descriptions-item label="技能关键词" v-if="item.keyword === '其他技能'">{{ item.keyword_new }}
+                </el-descriptions-item>
+                <el-descriptions-item label="工作时间">{{ handle_time(item.time) }}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </el-card>
+          <el-card class="box-card knowledge_list">
+            <div slot="header" class="clearfix">
+              <span>掌握技能 <el-button style="float: right;" type="text"
+                                    @click="update_data('knowledge_list', 4)">修改</el-button></span>
+            </div>
+            <el-card class="box-card" v-for="(item,i) in ruleForm.knowledge_list" :key="i" :body-style="boxcard">
+              <el-descriptions :title="'专业技能' + (i + 1)">
+                <el-descriptions-item label="技能名称">{{ item.name }}</el-descriptions-item>
+                <el-descriptions-item label="使用时长(月)">{{ item.use_month }}</el-descriptions-item>
+                <el-descriptions-item label="掌握程度">{{ item.level }}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </el-card>
+          <el-card class="box-card prove">
+            <div slot="header" class="clearfix">
+              <span>其他材料 <el-button style="float: right; margin-left: 10px;" type="text"
+                                    @click="prove_img_dialog = true;">查看详情</el-button><el-button style="float: right;"
+                                                                                                 type="text"
+                                                                                                 @click="update_data('prove', 3)">修改</el-button></span>
+            </div>
+            <el-dialog title="其他材料" :visible.sync="prove_img_dialog">
+              <el-table
+                  style="width: 100%"
+                  :data="[{'imageUrl1': ruleForm.form.imageUrl1, 'imageUrl2': ruleForm.form.imageUrl1}]">
+                <el-table-column
+                    prop="imageUrl1"
+                    label="在职证明" align="center" v-if="ruleForm.prove.work">
+                  <el-image :src="ruleForm.prove.work"
+                            fit="fill"></el-image>
+                </el-table-column>
+                <el-table-column
+                    prop="imageUrl2"
+                    label="社保证明" align="center" v-if="ruleForm.prove.security">
+                  <el-image :src="ruleForm.prove.security"
+                            fit="fill"></el-image>
+                </el-table-column>
+                <el-table-column
+                    prop="imageUrl2"
+                    label="其他证明" align="center" v-if="ruleForm.prove.other">
+                  <el-image :src="ruleForm.prove.other"
+                            fit="fill"></el-image>
+                </el-table-column>
+              </el-table>
+            </el-dialog>
+          </el-card>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="学历信息" name="second">
+      <el-tab-pane label="学历信息" v-if="update_ids.indexOf(1) !== -1" name="school">
         <div>
           <div class="text item">
             <el-card class="box-card">
@@ -146,11 +255,11 @@
                 <span>学历信息</span>
               </div>
               <el-card class="box-card" v-for="(item,i) in ruleForm.school_list" :key="i" :body-style="boxcard">
-                <el-form ref="school_ref" :model="item" label-width="100px" size="mini">
+                <el-form ref="school_ref" :model="item" label-width="100px" size="mini" :rules="school_ref">
                   <el-divider>学历 {{ i + 1 }}</el-divider>
                   <el-form-item label="学历:" prop="education">
                     <template>
-                      <el-select v-model="item.education" placeholder="请选择" clearable readonly>
+                      <el-select v-model="item.education" placeholder="请选择" clearable>
                         <el-option
                             v-for="opt in education_options"
                             :key="opt"
@@ -160,30 +269,33 @@
                       </el-select>
                     </template>
                   </el-form-item>
-                  <el-form-item label="学校:">
-                    <el-input v-model="item.school" maxlength="10" clearable readonly></el-input>
+                  <el-form-item label="学校:" prop="school">
+                    <el-input v-model="item.school" maxlength="10" clearable></el-input>
                   </el-form-item>
-                  <el-form-item label="专业:">
-                    <el-input v-model="item.speciality" maxlength="10" clearable readonly></el-input>
+                  <el-form-item label="专业:" prop="speciality">
+                    <el-input v-model="item.speciality" maxlength="10" clearable></el-input>
                   </el-form-item>
-                  <el-form-item label="上学时间">
+                  <el-form-item label="上学时间" prop="time">
                     <el-date-picker
                         v-model="item.time"
                         type="daterange"
                         range-separator="至"
                         start-placeholder="入学日期"
-                        end-placeholder="毕业日期" clearable readonly
+                        end-placeholder="毕业日期" clearable
                     >
                     </el-date-picker>
 
                   </el-form-item>
-                  <el-form-item label="毕业证:" v-if="item.education != '在校学生' & item.education != ''">
+                  <el-form-item prop="diploma" label="毕业证:" v-if="item.education != '在校学生' & item.education != ''">
                     <el-upload
                         element-loading-text="上传中"
                         element-loading-spinner="el-icon-loading"
                         class="avatar-uploader"
                         :action="upload_url"
-                        :show-file-list="false" clearable readonly :disabled="true"
+                        :show-file-list="false"
+                        :on-success="(response) =>handleAvatarSuccess3(response, i, 1)"
+                        :before-upload="beforeAvatarUpload"
+
                     >
                       <img v-if="item.diploma" :src="item.diploma" class="avatar">
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -195,23 +307,50 @@
                         element-loading-spinner="el-icon-loading"
                         class="avatar-uploader"
                         :action="upload_url"
-                        :show-file-list="false" clearable readonly :disabled="true">
+                        :show-file-list="false"
+                        :on-success="(response) =>handleAvatarSuccess3(response, i, 2)"
+                        :before-upload="beforeAvatarUpload">
                       <img v-if="item.degree" :src="item.degree" class="avatar">
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
 
                   </el-form-item>
+                  <el-form-item prop="stu_card" label="学生证:" v-if="item.education === '在校学生'">
+                    <el-upload
+                        element-loading-text="上传中"
+                        element-loading-spinner="el-icon-loading"
+                        class="avatar-uploader"
+                        :action="upload_url"
+                        :show-file-list="false" :on-success="(response) =>handleAvatarSuccess3(response, i, 6)"
+                        :before-upload="beforeAvatarUpload">
+                      <img v-if="item.stu_card" :src="item.stu_card" class="avatar">
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
 
+                  </el-form-item>
+                  <el-form-item label="">
+                    <el-button style="float: left;" type="primary" size="small"
+                               v-if="i===ruleForm.school_list.length-1"
+                               @click="add_school_det()" icon="el-icon-plus" circle>
+                    </el-button>
+                    <el-button style="float: left;" type="danger" size="small" v-if="i!=0"
+                               @click="del_school_det(i)" icon="el-icon-minus" circle>
+                    </el-button>
+                  </el-form-item>
 
                 </el-form>
               </el-card>
+
+              <el-button type="primary" size="small" @click="save_school('school_ref')"
+                         style="float: right; margin-bottom: 20px;">保存
+              </el-button>
             </el-card>
           </div>
 
         </div>
 
       </el-tab-pane>
-      <el-tab-pane label="工作经历" name="third">
+      <el-tab-pane label="工作经历" v-if="update_ids.indexOf(2) !== -1" name="work">
         <div>
           <div class="text item">
             <el-card class="box-card">
@@ -219,34 +358,33 @@
                 <span>工作经历</span>
               </div>
               <el-card class="box-card" v-for="(item,i) in ruleForm.work_list" :key="i" :body-style="boxcard">
-                <el-form ref="work_rules" :model="item" label-width="100px" size="mini">
+                <el-form ref="work_rules" :model="item" label-width="100px" size="mini" :rules="work_rules">
                   <el-divider>工作经历{{ i + 1 }}</el-divider>
                   <el-form-item label="公司名:" prop="name">
-                    <el-input v-model="item.name" maxlength="10" readonly></el-input>
+                    <el-input v-model="item.name" maxlength="10"></el-input>
                   </el-form-item>
                   <el-form-item label="从事行业:" prop="industry">
-                    <el-input v-model="item.industry" maxlength="10" readonly></el-input>
+                    <el-input v-model="item.industry" maxlength="10"></el-input>
                   </el-form-item>
                   <el-form-item label="岗位:" prop="post">
-                    <el-input v-model="item.post" maxlength="10" readonly></el-input>
+                    <el-input v-model="item.post" maxlength="10"></el-input>
                   </el-form-item>
 
                   <el-form-item label="技能关键词:" prop="keyword">
                     <template>
-                      <el-input v-model="item.keyword" maxlength="10" readonly></el-input>
-                      <!--                                        <el-select v-model="item.keyword" placeholder="请选择" readonly>-->
-                      <!--                                            <el-option-->
-                      <!--                                                    v-for="item in subjects"-->
-                      <!--                                                    :key="item.id"-->
-                      <!--                                                    :label="item.name"-->
-                      <!--                                                    :value="item.name" readonly>-->
-                      <!--                                            </el-option>-->
-                      <!--                                            <el-option value="其他技能" label="其他技能"></el-option>-->
-                      <!--                                        </el-select>-->
+                      <el-select v-model="item.keyword" placeholder="请选择">
+                        <el-option
+                            v-for="item in subjects"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                        </el-option>
+                        <el-option value="其他技能" label="其他技能"></el-option>
+                      </el-select>
                     </template>
                   </el-form-item>
                   <el-form-item label="其他技能:" prop="keyword_new" v-if="item.keyword == '其他技能'">
-                    <el-input v-model="item.keyword_new" maxlength="10" readonly></el-input>
+                    <el-input v-model="item.keyword_new" maxlength="10"></el-input>
                   </el-form-item>
 
                   <el-form-item label="工作时间:" prop="time">
@@ -255,23 +393,98 @@
                         type="daterange"
                         range-separator="至"
                         start-placeholder="入职时间"
-                        end-placeholder="离职时间" readonly>
+                        end-placeholder="离职时间">
                     </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="">
+                    <el-button style="float: left;" type="primary" size="small"
+                               v-if="i===ruleForm.work_list.length-1"
+                               @click="add_work_det()" icon="el-icon-plus" circle>
+                    </el-button>
+
+                    <el-button style="float: left;" type="danger" size="small" v-if="i!=0"
+                               @click="del_work_det(i)" icon="el-icon-minus" circle>
+                    </el-button>
                   </el-form-item>
                 </el-form>
               </el-card>
+              <el-button type="primary" size="small" @click="save_work('work_rules')"
+                         style="float: right; margin-bottom: 20px;">保存
+              </el-button>
             </el-card>
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="其他证明" name="fourth">
+      <el-tab-pane label="掌握技能" v-if="update_ids.indexOf(4) !== -1" name="knowledge_list">
+        <div>
+          <div class="text item">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <span>掌握技能</span>
+              </div>
+              <el-card class="box-card" v-for="(item,i) in ruleForm.knowledge_list" :key="i" :body-style="boxcard">
+                <el-form ref="knowledge_rules" :model="item" label-width="120px" size="mini" :rules="knowledge_rules">
+                  <el-divider>专业技能</el-divider>
+                  <el-form-item label="技能类型:">
+                    <template>
+                      <el-radio v-model="item.type" label="1">平台技能</el-radio>
+                      <el-radio v-model="item.type" label="2">其他技能</el-radio>
+                    </template>
+                  </el-form-item>
+                  <el-form-item label="技能名称:" prop="name" v-if="item.type == 1">
+                    <template>
+                      <el-select v-model="item.name" placeholder="请选择">
+                        <el-option
+                            v-for="item in subjects"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                        </el-option>
+                      </el-select>
+                    </template>
+                  </el-form-item>
+                  <el-form-item label="技能名称:" prop="name" v-if="item.type == 2">
+                    <el-input v-model="item.name" maxlength="10"></el-input>
+                  </el-form-item>
+                  <el-form-item label="使用时长(月):" prop="use_month">
+                    <el-input v-model.number="item.use_month" maxlength="10"></el-input>
+                  </el-form-item>
+                  <el-form-item label="掌握程度:" prop="level">
+                    <template>
+                      <el-radio v-model="item.level" label="1">一般</el-radio>
+                      <el-radio v-model="item.level" label="2">熟练</el-radio>
+                      <el-radio v-model="item.level" label="3">良好</el-radio>
+                      <el-radio v-model="item.level" label="4">精通</el-radio>
+                    </template>
+                  </el-form-item>
+                  <el-form-item label="">
+                    <el-button style="float: left;" type="primary" size="small"
+                               v-if="i===ruleForm.knowledge_list.length-1"
+                               @click="add_knowledge_det()" icon="el-icon-plus" circle>
+                    </el-button>
+
+                    <el-button style="float: left;" type="danger" size="small" v-if="i!=0"
+                               @click="del_knowledge_det(i)" icon="el-icon-minus" circle>
+                    </el-button>
+                  </el-form-item>
+
+                </el-form>
+              </el-card>
+              <el-button type="primary" size="small" @click="save_knowledge('knowledge_rules')"
+                         style="float: right; margin-bottom: 20px;">保存
+              </el-button>
+            </el-card>
+          </div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="其他证明" v-if="update_ids.indexOf(3) !== -1" name="prove">
         <div>
           <div class="text item">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>其他证明</span>
               </div>
-              <el-form ref="prove_rules" :model="ruleForm.prove" label-width="100px" size="mini">
+              <el-form ref="prove_rules" :model="ruleForm.prove" label-width="100px" size="mini" :rules="prove_rules">
                 <el-divider>其他证明材料</el-divider>
                 <el-form-item label="在职证明:" prop="work">
                   <el-upload
@@ -281,7 +494,7 @@
                       :action="upload_url"
                       :show-file-list="false"
                       :on-success="(response) =>handleAvatarSuccess3(response, 0, 3)"
-                      :before-upload="beforeAvatarUpload" :disabled="true">
+                      :before-upload="beforeAvatarUpload">
                     <img v-if="ruleForm.prove.work" :src="ruleForm.prove.work" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
@@ -294,7 +507,7 @@
                       :action="upload_url"
                       :show-file-list="false"
                       :on-success="(response) =>handleAvatarSuccess3(response, 0, 4)"
-                      :before-upload="beforeAvatarUpload" :disabled="true">
+                      :before-upload="beforeAvatarUpload">
                     <img v-if="ruleForm.prove.security" :src="ruleForm.prove.security" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
@@ -307,66 +520,19 @@
                       :action="upload_url"
                       :show-file-list="false"
                       :on-success="(response) =>handleAvatarSuccess3(response, 0, 5)"
-                      :before-upload="beforeAvatarUpload" :disabled="true">
+                      :before-upload="beforeAvatarUpload">
                     <img v-if="ruleForm.prove.other" :src="ruleForm.prove.other" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
                 </el-form-item>
-
               </el-form>
             </el-card>
+            <el-button type="primary" size="small" @click="save_prove('prove_rules')"
+                       style="float: right; margin-bottom: 20px;">保存
+            </el-button>
           </div>
         </div>
 
-      </el-tab-pane>
-      <el-tab-pane label="掌握技能" name="knowledge_list">
-        <div>
-          <div class="text item">
-            <el-card class="box-card">
-              <div slot="header" class="clearfix">
-                <span>掌握技能</span>
-              </div>
-              <el-card class="box-card" v-for="(item,i) in ruleForm.knowledge_list" :key="i" :body-style="boxcard">
-                <el-form ref="knowledge_rules" :model="item" label-width="120px" size="mini">
-                  <el-divider>专业技能</el-divider>
-                  <el-form-item label="技能类型:">
-                    <template>
-                      <el-radio v-model="item.type" label="1" readonly>平台技能</el-radio>
-                      <el-radio v-model="item.type" label="2" readonly>其他技能</el-radio>
-                    </template>
-                  </el-form-item>
-                  <el-form-item label="技能名称:" prop="name" v-if="item.type == 1">
-                    <template>
-                      <el-select v-model="item.name" placeholder="请选择" readonly>
-                        <el-option
-                            v-for="item in subjects"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.name" readonly>
-                        </el-option>
-                      </el-select>
-                    </template>
-                  </el-form-item>
-                  <el-form-item label="技能名称:" prop="name" v-if="item.type == 2">
-                    <el-input v-model="item.name" maxlength="10" readonly></el-input>
-                  </el-form-item>
-                  <el-form-item label="使用时长(月):" prop="use_month">
-                    <el-input v-model.number="item.use_month" maxlength="10" readonly></el-input>
-                  </el-form-item>
-                  <el-form-item label="掌握程度:" prop="level">
-                    <template>
-                      <el-radio v-model="item.level" label="1" readonly>一般</el-radio>
-                      <el-radio v-model="item.level" label="2" readonly>熟练</el-radio>
-                      <el-radio v-model="item.level" label="3" readonly>良好</el-radio>
-                      <el-radio v-model="item.level" label="4" readonly>精通</el-radio>
-                    </template>
-                  </el-form-item>
-
-                </el-form>
-              </el-card>
-            </el-card>
-          </div>
-        </div>
       </el-tab-pane>
     </el-tabs>
   </el-row>
@@ -380,12 +546,19 @@ export default {
   },
   data() {
     return {
+      education: '',
+      diploma: '',
+      degree: '',
+      stu_card: '',
+      prove_img_dialog: false,
       dialog_email: false,
       send_email: "",
+      update_ids: [],
       dialog_phone: false,
       send_phone_number: '',
       code: '',
       active: 1,
+      school_img_dialog: false,
       img_dialog: false,
       img_url1: "",
       img_url2: "",
@@ -405,28 +578,75 @@ export default {
           work: ''
         }
       },
-      ruleForm1: {
-        name: [{required: true, message: '请填写姓名', trigger: 'blur'},
-          {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}],
-        phone: [
-          {required: true, message: '请填写手机号', trigger: 'blur'},
-        ],
-        number_id: [
-          {required: true, message: '请填写身份证号码', trigger: 'blur'},
-          {min: 18, max: 18, message: '请输入18为公民身份证号', trigger: 'blur'}
-        ],
-        back_time: [
-          {required: true, message: '请填写身份证有效期', trigger: 'blur'},
-        ]
-
-      },
       isShow: false,
       disabled: false,
       go_login_second: 3,
       timeout: null,
+      // 其他证明验证
+      prove_rules: {
+        work: [
+          {required: true, message: '请上传在职证明', trigger: 'blur'},
+        ],
+        security: [
+          {required: true, message: '请上传社保证明', trigger: 'blur'},
+        ],
+
+      },
+      // 技能信息验证
+      knowledge_rules: {
+        name: [
+          {required: true, message: '请选择或输入技能名称', trigger: 'blur'},
+        ],
+        use_month: [
+          {required: true, message: '请输入使用时长', trigger: 'blur'},
+        ],
+        level: [
+          {required: true, message: '请选择掌握程度', trigger: 'blur'},
+        ],
+      },
+      // 工作信息验证
+      work_rules: {
+        name: [
+          {required: true, message: '请填写公司名称', trigger: 'blur'},
+        ],
+        industry: [
+          {required: true, message: '请填写从事行业', trigger: 'blur'},
+        ],
+        post: [
+          {required: true, message: '请填写岗位', trigger: 'blur'},
+        ],
+        time: [
+          {required: true, message: '请选择工作时间', trigger: 'blur'},
+        ],
+        keyword: [
+          {required: true, message: '请填写技能关键词', trigger: 'blur'},
+        ],
+        keyword_new: [
+          {required: true, message: '请填写技能关键词', trigger: 'blur'}
+        ]
+      },
+      school_ref: {
+        education: [
+          {required: true, message: '请填写学历', trigger: 'blur'},
+        ],
+        school: [
+          {required: true, message: '请填写毕业学校', trigger: 'blur'},
+        ],
+        speciality: [
+          {required: true, message: '请填写专业', trigger: 'blur'},
+        ],
+        diploma: [
+          {required: true, message: '请上传毕业证', trigger: 'blur'},
+        ],
+        stu_card: [
+          {required: true, message: '请上传学生证', trigger: 'blur'},
+        ],
+        time: [
+          {required: true, message: '请填写上学时间', trigger: 'blur'},
+        ]
+      },
     };
   },
-  // is-disabled
 
   mounted() {
 
@@ -435,6 +655,179 @@ export default {
     this.init_data()
   },
   methods: {
+    look_school(item) {
+      console.log(item)
+      this.education = item.education;
+      this.diploma = item.diploma;
+      this.degree = item.degree;
+      this.stu_card = item.stu_card;
+      this.school_img_dialog = true;
+    },
+    toTop() {
+      document.documentElement.scrollTop = 0;
+    },
+    // 处理时间
+    handle_times(time) {
+      var start_time_year = time[0].getFullYear();
+      var start_time_moth = time[0].getMonth() + 1;
+      var start_time_day = time[0].getDate();
+      if (start_time_moth < 10) {
+        start_time_moth = '0' + start_time_moth
+      }
+      if (start_time_day < 10) {
+        start_time_day = '0' + start_time_day
+      }
+      var end_time_year = time[1].getFullYear();
+      var end_time_moth = time[1].getMonth() + 1;
+      var end_time_day = time[1].getDate();
+      if (end_time_moth < 10) {
+        end_time_moth = '0' + end_time_moth
+      }
+      if (end_time_day < 10) {
+        end_time_day = '0' + end_time_day
+      }
+      var start_time = `${start_time_year}${start_time_moth}${start_time_day}`
+      var end_time = `${end_time_year}${end_time_moth}${end_time_day}`
+      return [start_time, end_time]
+    },
+    save_prove(formName) {
+      var thsi = this;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var post_data = {
+            step_id: 4,
+            prove: JSON.stringify(this.ruleForm.prove)
+          }
+          this.$http.post("/interviewer/save/", post_data).then(res => {
+            if (res.data.response === 'ok') {
+              this.update_ids.splice(this.update_ids.indexOf(1), 1)
+              this.activeName = 'first';
+              this.init_data()
+            } else {
+              thsi.$message.error(res.data.message);
+            }
+          })
+        }
+      });
+    },
+    save_school(formName) {
+      var thsi = this;
+      let is_val = false;
+      this.$.each(this.$refs[formName], function (i) {
+        this.validate((valid) => {
+          if (valid) {
+            is_val = true;
+          } else {
+            is_val = false;
+          }
+        });
+      })
+      if (is_val) {
+        this.$.each(this.ruleForm.school_list, function (i) {
+          var time = thsi.handle_times(this.time)
+          this.start_time = time[0]
+          this.end_time = time[1]
+        })
+        var post_data = {
+          step_id: 2,
+          data: JSON.stringify(this.ruleForm.school_list)
+        }
+        this.$http.post("/interviewer/save/", post_data).then(res => {
+          if (res.data.response === 'ok') {
+            this.update_ids.splice(this.update_ids.indexOf(1), 1)
+            this.activeName = 'first';
+            this.init_data()
+          } else {
+            thsi.$message.error(res.data.message);
+          }
+        })
+      }
+    },
+    // 删除学历信息
+    del_school_det(index) {
+      this.$confirm('确定删除此信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.ruleForm.school_list.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
+    // 新增学历信息
+    add_school_det() {
+      if (this.ruleForm.school_list.length < 5) {
+        this.ruleForm.school_list.push({
+          education: "",
+          school: "",
+          speciality: "",
+          time: [],
+          diploma: "",
+          degree: "",
+          stu_card: "",
+        })
+      } else {
+        this.$message.error("最多添加五个");
+      }
+    },
+    update_data(activeName, type) {
+      if (!this.update_ids.length) {
+        this.$confirm('修改信息后需重新审核，再此期间您的权限将变成普通用户！是否继续？', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.toTop()
+          this.activeName = activeName;
+          if (this.update_ids.indexOf(type) === -1) {
+            this.update_ids.push(type)
+          }
+        })
+      } else {
+        this.toTop()
+        this.activeName = activeName;
+        if (this.update_ids.indexOf(type) === -1) {
+          this.update_ids.push(type)
+        }
+      }
+
+
+    },
+    // 处理时间
+    handle_time(time) {
+      if (time.length) {
+        var start_time_year = time[0].getFullYear();
+        var start_time_moth = time[0].getMonth() + 1;
+        var start_time_day = time[0].getDate();
+        if (start_time_moth < 10) {
+          start_time_moth = '0' + start_time_moth
+        }
+        if (start_time_day < 10) {
+          start_time_day = '0' + start_time_day
+        }
+        var end_time_year = time[1].getFullYear();
+        var end_time_moth = time[1].getMonth() + 1;
+        var end_time_day = time[1].getDate();
+        if (end_time_moth < 10) {
+          end_time_moth = '0' + end_time_moth
+        }
+        if (end_time_day < 10) {
+          end_time_day = '0' + end_time_day
+        }
+        var start_time = `${start_time_year}${start_time_moth}${start_time_day}`
+        var end_time = `${end_time_year}${end_time_moth}${end_time_day}`
+        return `${start_time} -- ${end_time}`
+      }
+    },
     sendEmail() {
       // 发送邮件
       // 打开验证码弹窗
@@ -488,6 +881,24 @@ export default {
         // 按钮里的内容恢复初始状态
         this.$(".getcode")[0].textContent = '发送验证码';
       }
+    },
+    // 上传毕业证\学位证\学生证
+    handleAvatarSuccess3(res, i, type) {
+      if (type === 1) {
+        this.ruleForm.school_list[i].diploma = web_file_url + res.data[0].file_url
+        console.log(i, this.school_list)
+      } else if (type === 2) {
+        this.ruleForm.school_list[i].degree = web_file_url + res.data[0].file_url
+      } else if (type === 6) {
+        this.ruleForm.school_list[i].stu_card = web_file_url + res.data[0].file_url
+      } else if (type === 3) {
+        this.ruleForm.prove.work = web_file_url + res.data[0].file_url
+      } else if (type === 4) {
+        this.ruleForm.prove.security = web_file_url + res.data[0].file_url
+      } else if (type === 5) {
+        this.ruleForm.prove.other = web_file_url + res.data[0].file_url
+      }
+      this.$forceUpdate();
     },
     // 用户通过了验证
     success(msg) {
@@ -654,7 +1065,7 @@ export default {
     init_data: function () {
       const loading = this.$loading({
         lock: true,
-        target: document.querySelector('.box-card'),
+        target: document.querySelector('#first'),
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.3)'
@@ -677,7 +1088,15 @@ export default {
                 this.time[1].substring(6, 8))
           ]
         })
-
+        if (!this.ruleForm.school_list.length) {
+          this.add_school_det()
+        }
+        if (!this.ruleForm.work_list.length) {
+          this.add_work_det()
+        }
+        if (!this.ruleForm.knowledge_list.length) {
+          this.add_knowledge_det()
+        }
         this.$.each(this.ruleForm.work_list, function (i) {
           this.time = [
             new Date(this.time[0].substring(0, 4),
@@ -692,6 +1111,43 @@ export default {
         this.subjects = res.data.data.subjects;
         loading.close();
       })
+    },
+    save_work(formName) {
+      // 保存工作经历
+      var thsi = this;
+      let is_val = false;
+      this.$.each(this.$refs[formName], function (i) {
+        this.validate((valid) => {
+          if (valid) {
+            is_val = true;
+          } else {
+            is_val = false;
+          }
+        });
+      })
+      if (is_val) {
+        this.$.each(this.ruleForm.work_list, function (i) {
+          var time = thsi.handle_times(this.time)
+          this.start_time = time[0]
+          this.end_time = time[1]
+          if (this.keyword_new && this.keyword_new.length) {
+            this.keyword = this.keyword_new
+          }
+        })
+        var post_data = {
+          step_id: 3,
+          data: JSON.stringify(this.ruleForm.work_list)
+        }
+        this.$http.post("/interviewer/save/", post_data).then(res => {
+          if (res.data.response === 'ok') {
+            this.update_ids.splice(this.update_ids.indexOf(2), 1)
+            this.activeName = 'first';
+            this.init_data()
+          } else {
+            thsi.$message.error(res.data.message);
+          }
+        })
+      }
     },
     // 上传验证
     beforeAvatarUpload(file) {
@@ -709,12 +1165,106 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
-    // 识别身份证正面
-    handleAvatarSuccess(res) {
-      this.ruleForm.form.imageUrl1 = this.web_file_url + res.data[0].file_url
-      this.loading = true;
-    },
 
+    // 新增工作经历
+    add_work_det() {
+      if (this.ruleForm.work_list.length < 5) {
+        this.ruleForm.work_list.push({
+          name: "",
+          industry: "",
+          post: "",
+          time: [],
+          start_time: "",
+          end_time: "",
+          keyword: "",
+        })
+      } else {
+        this.$message.error("最多添加五个");
+      }
+    },
+    // 删除工作经历
+    del_work_det(index) {
+      this.$confirm('确定删除此信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.ruleForm.work_list.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
+    save_knowledge(formName) {
+      // 保存掌握技能
+      var thsi = this;
+      let is_val = false;
+      this.$.each(this.$refs[formName], function (i) {
+        this.validate((valid) => {
+          if (valid) {
+            is_val = true;
+          } else {
+            is_val = false;
+          }
+        });
+      })
+      if (is_val) {
+        var post_data = {
+          step_id: 5,
+          data: JSON.stringify(this.ruleForm.knowledge_list)
+        }
+        this.$http.post("/interviewer/save/", post_data).then(res => {
+          if (res.data.response === 'ok') {
+            this.update_ids.splice(this.update_ids.indexOf(3), 1)
+            this.activeName = 'first';
+            this.init_data()
+          } else {
+            thsi.$message.error(res.data.message);
+          }
+        })
+      }
+    },
+    // 新增技能
+    add_knowledge_det() {
+      if (this.ruleForm.knowledge_list.length < 20) {
+        this.ruleForm.knowledge_list.push({
+          name: "",
+          sid: "",
+          level: "",
+          type: "1",
+          use_month: "",
+        })
+      } else {
+        this.$message.error("最多添加20个技能");
+      }
+    },
+    // 删除技能
+    del_knowledge_det(index) {
+      this.$confirm('确定删除此信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.ruleForm.knowledge_list.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
     onUpdateHandler() {
 
       this.$http({
@@ -739,7 +1289,7 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -768,12 +1318,21 @@ export default {
 }
 
 .el-form {
-  width: auto;
-  padding-bottom: 0;
+  padding-bottom: 0 !important;
+  width: 100% !important;
 }
 
 .el-dialog__wrapper {
   z-index: 998 !important;
 }
 
+.el-button--medium {
+  padding: 0;
+  margin-top: 4px;
+
+}
+
+.el-card.prove .el-card__body {
+  padding: 0;
+}
 </style>

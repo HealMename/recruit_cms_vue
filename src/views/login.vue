@@ -7,7 +7,7 @@
             <img src="https://www.ittest008.com/file/number_id_img/2023/06/14/20230614061057325629.png" alt="">
           </h3></div>
           <el-form-item label="">
-            <el-input placeholder="手机号" name="username" type="text" v-model="rulesForm.username"/>
+            <el-input placeholder="手机号" name="username" type="text" v-model="rulesForm.username" maxlength="11"/>
           </el-form-item>
           <Vcode :show="isShow" @success="success" @close="close"/>
           <el-form-item label="">
