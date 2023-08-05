@@ -1099,15 +1099,7 @@ export default {
                 this.time[1].substring(6, 8))
           ]
         })
-        if (!this.ruleForm.school_list.length) {
-          this.add_school_det()
-        }
-        if (!this.ruleForm.work_list.length) {
-          this.add_work_det()
-        }
-        if (!this.ruleForm.knowledge_list.length) {
-          this.add_knowledge_det()
-        }
+
         this.$.each(this.ruleForm.work_list, function (i) {
           this.time = [
             new Date(this.time[0].substring(0, 4),
@@ -1120,6 +1112,15 @@ export default {
         })
         this.upload_url = res.data.data.upload_url;
         this.subjects = res.data.data.subjects;
+        if (!this.ruleForm.school_list.length) {
+          this.add_school_det()
+        }
+        if (!this.ruleForm.work_list.length) {
+          this.add_work_det()
+        }
+        if (!this.ruleForm.knowledge_list.length) {
+          this.add_knowledge_det()
+        }
         loading.close();
       })
     },

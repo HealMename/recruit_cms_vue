@@ -6,8 +6,8 @@
       <el-card class="box-card" style="margin-bottom: 10px;">
         <div slot="header" class="clearfix">
           <span>题目信息  ID:{{ question.id }}</span>
-          <el-button type="success" size="small" @click="verify(question.id, 1)" style="float: right;" v-if="question.status !== '1'">通过审核</el-button>
-          <el-button type="danger" size="small" @click="verify(question.id, 0)" style="float: right;" v-if="question.status === '1'">取消审核</el-button>
+          <el-button type="success" size="small" @click="verify(question.id, 1)" style="float: right;" v-if="question.status !== '1' && open_role.indexOf('1') !== -1">通过审核</el-button>
+          <el-button type="danger" size="small" @click="verify(question.id, 0)" style="float: right;" v-if="question.status === '1'  && open_role.indexOf('1') !== -1">取消审核</el-button>
           <el-button type="success" size="small" @click="do_question(question.id)" style="float: right;margin-right: 10px">进入实操环境</el-button>
 
         </div>
@@ -50,7 +50,7 @@ export default {
 
 
     return {
-
+      open_role: this.$storage.get("open_role"),
       loading: false,
       question: {
         id: this.$route.params.id,
