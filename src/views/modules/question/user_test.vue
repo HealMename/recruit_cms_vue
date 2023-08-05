@@ -5,7 +5,7 @@
         <el-form-item label="做题记录ID:">
           <el-input v-model="form.id" placeholder=""></el-input>
         </el-form-item>
-        <el-form-item label="手机号:">
+        <el-form-item label="手机号:" v-if="open_role.indexOf('1') !== -1">
           <el-input v-model="form.phone" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="做题时间:">
@@ -95,6 +95,7 @@
 export default {
   data() {
     return {
+      open_role: this.$storage.get("open_role"),
       valueFormat: {
       type: String,
       default: 'timestamp',//默认timestamp时间戳，也可设置'yyyy-MM-dd'：2019-03-22
