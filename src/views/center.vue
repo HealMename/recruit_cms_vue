@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading">
+    <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading" id="main">
       <el-tab-pane label="基本信息" name="first" id="first">
         <div>
           <el-card class="box-card">
@@ -592,6 +592,7 @@ export default {
         ],
 
       },
+      open_role: this.$storage.get("open_role"),
       // 技能信息验证
       knowledge_rules: {
         name: [
@@ -690,6 +691,16 @@ export default {
       var end_time = `${end_time_year}${end_time_moth}${end_time_day}`
       return [start_time, end_time]
     },
+    loadings(){
+
+      return this.$loading({
+        lock: true,
+        target: document.querySelector('#main'),
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.3)'
+      });
+    },
     save_prove(formName) {
       var thsi = this;
       this.$refs[formName].validate((valid) => {
@@ -698,12 +709,12 @@ export default {
             step_id: 4,
             prove: JSON.stringify(this.ruleForm.prove)
           }
+          const loading = this.loadings()
           this.$http.post("/interviewer/save/", post_data).then(res => {
             if (res.data.response === 'ok') {
-              this.update_ids.splice(this.update_ids.indexOf(1), 1)
-              this.activeName = 'first';
-              this.init_data()
+              window.location.reload();
             } else {
+              loading.close();
               thsi.$message.error(res.data.message);
             }
           })
@@ -732,12 +743,12 @@ export default {
           step_id: 2,
           data: JSON.stringify(this.ruleForm.school_list)
         }
+        const loading = this.loadings()
         this.$http.post("/interviewer/save/", post_data).then(res => {
           if (res.data.response === 'ok') {
-            this.update_ids.splice(this.update_ids.indexOf(1), 1)
-            this.activeName = 'first';
-            this.init_data()
+            window.location.reload();
           } else {
+            loading.close()
             thsi.$message.error(res.data.message);
           }
         })
@@ -780,7 +791,7 @@ export default {
       }
     },
     update_data(activeName, type) {
-      if (!this.update_ids.length) {
+      if (!this.update_ids.length && (this.open_role.indexOf('2') !== -1 || this.open_role.indexOf('3') !== -1)) {
         this.$confirm('修改信息后需重新审核，再此期间您的权限将变成普通用户！是否继续？', '删除', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -1138,12 +1149,12 @@ export default {
           step_id: 3,
           data: JSON.stringify(this.ruleForm.work_list)
         }
+        const loading = this.loadings()
         this.$http.post("/interviewer/save/", post_data).then(res => {
           if (res.data.response === 'ok') {
-            this.update_ids.splice(this.update_ids.indexOf(2), 1)
-            this.activeName = 'first';
-            this.init_data()
+            window.location.reload();
           } else {
+            loading.close()
             thsi.$message.error(res.data.message);
           }
         })
@@ -1220,12 +1231,12 @@ export default {
           step_id: 5,
           data: JSON.stringify(this.ruleForm.knowledge_list)
         }
+        const loading = this.loadings()
         this.$http.post("/interviewer/save/", post_data).then(res => {
           if (res.data.response === 'ok') {
-            this.update_ids.splice(this.update_ids.indexOf(3), 1)
-            this.activeName = 'first';
-            this.init_data()
+            window.location.reload();
           } else {
+            loading.close()
             thsi.$message.error(res.data.message);
           }
         })
@@ -1326,7 +1337,7 @@ export default {
   z-index: 998 !important;
 }
 
-.el-button--medium {
+#first .el-button--medium {
   padding: 0;
   margin-top: 4px;
 
