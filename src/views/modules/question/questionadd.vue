@@ -47,7 +47,6 @@
           </el-radio-group>
         </el-form-item>
       </div>
-
       <div class="base_info">
         <el-form-item label="题目信息" style="width: 77px;">
         </el-form-item>
@@ -62,7 +61,7 @@
           <el-input v-model="form.title" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="题目描述：" prop="desc">
-          <el-input type="textarea" v-model="form.desc" maxlength="200" show-word-limit></el-input>
+          <el-input type="textarea" v-model="form.desc" maxlength="400" show-word-limit ></el-input>
         </el-form-item>
         <el-form-item
             v-for="(domain, index) in form.os_detail"
@@ -217,7 +216,7 @@ export default {
         do_points: [{required: true, message: '请输入考点', trigger: 'blur'},
           {min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur'}],
         desc: [{required: true, message: '请输入题目描述', trigger: 'blur'},
-          {min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur'}]
+          {min: 1, max: 400, message: '长度在 1 到 400 个字符', trigger: 'blur'}]
       }
     }
   },
@@ -435,5 +434,9 @@ export default {
   border: 1px solid #CCCCCC;
   padding: 20px;
   margin: 10px 0;
+}
+.el-textarea__inner{
+  height: 150px;
+  resize: none
 }
 </style>
